@@ -70,26 +70,5 @@ unordered_map<int, unordered_map<int, int>> D::addEdge(int v1, int v2, int weigh
 }
 
 int D::getDistance(int v1, int v2) {
-//    for(auto d: Ds[v1].distance) cout<< d<<" ";
-//    cout<<endl;
-    
-    
     return Ds[v1].distance[v2];
 }
-
-//int main() {
-//    vector<unordered_set<pair<int, int>, PHash, PCompare>> graph = {
-//        {{1, 10}, {2, 35}, {3, 100}}, // Neighbors of node 0
-//        {{0, 10}, {2, 15}},            // Neighbors of node 1
-//        {{0, 35}, {1, 15}},            // Neighbors of node 2
-//        {{0, 100}}                     // Neighbors of node 3
-//    };
-//
-//    D d_instance(1, 150, graph, 100);
-//
-//    d_instance.addEdge(0, 1, 5);
-//
-//    cout << "Distance between nodes 0 and 1: " << d_instance.getDistance(0, 1) << endl;
-//
-//    return 0;
-//}

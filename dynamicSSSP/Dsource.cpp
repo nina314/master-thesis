@@ -81,7 +81,6 @@ pair<unordered_set<int>, unordered_set<int>> Dsource::addEdge(int u, int v, int 
 
     unordered_set<int> toAdd;
     unordered_set<int> toRemove;
-//    cout<<"D"<< maxDegree<<endl;
 
     if (distance[u] + weight >= distance[v] && distance[v] + weight >= distance[u])
         return {toAdd, toRemove};

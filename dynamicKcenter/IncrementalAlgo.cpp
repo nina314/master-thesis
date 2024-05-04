@@ -45,8 +45,6 @@ unordered_set<int> sampleVertices(const unordered_set<int>& L_prev, double proba
 
 bool kBoundedRulingSet(int u, int v) {
     
-//    cout<<u<<" "<<v<<endl;
-//    cout<<i<<" SA "<<L[i].size()<<" "<<4*k<<endl; 
     if (L[i].size() > 4 * k) 
     {
         if (i == 0 || L[i].size() <= L[i - 1].size() / 2) 
@@ -57,7 +55,6 @@ bool kBoundedRulingSet(int u, int v) {
             
             if(S.size()<=i) S.push_back(unordered_set<int>());
             S[i] = sampleVertices(L[i - 1], probability);
-//            cout<<S[i].size()<<endl;
             for (int x : L[i - 1]) {
                 bool is_independent = true;
                 for (int y : S[i]) 
@@ -65,16 +62,12 @@ bool kBoundedRulingSet(int u, int v) {
                     if (graph[x].count({y, 1})) 
                     {
                         is_independent = false;
-//                        cout<<"jeste "<< x<<" "<<y<<endl;
                         break;
                     }
                 }
                 
                 if (is_independent) 
                 {
-//                    if(i>=L.size()) 
-//                        L.push_back(unordered_set<int>());
-                    
                     L[i].insert(x);
                 }
             }
@@ -99,11 +92,9 @@ bool kBoundedRulingSet(int u, int v) {
             {
                 S_union.insert(S[j].begin(), S[j].end());
             }
-            B.insert(S_union.begin(), S_union.end()); //nodes
+            B.insert(S_union.begin(), S_union.end()); 
             initialized = true;
             
-//            for(auto b: B) cout<<b<<" ";
-//            cout<<endl;
             return true;
         } 
         else if (S[i].count(u) && S[i].count(v)) 
@@ -130,25 +121,3 @@ bool insertEdge(int u, int v) {
 }
 };
     
-int main() {
-    
-    auto adj = getGraph("testingData/cleanedFiles/sequential-Edges.txt");
-    
-    auto inc = IncrementalAlgo(adj, 5);
-    
-//    for(int i=0; i<inc.L.size(); i++)
-//    {
-//        cout<<i<<endl;
-//        
-//        for(auto d: inc.L[i])
-//        {
-//            cout<<d<<" ";
-//        }
-//        cout<<endl;
-//    }
-    
-    inc.insertEdge(0, 2);
-//    inc.insertEdge(0, 3);
-    
-    return 0;
-}

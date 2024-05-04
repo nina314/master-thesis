@@ -86,25 +86,3 @@ vector<int> ScaledEStree::getDistances()
 {
     return l;
 }
-
-//int main() {
-//    
-//    vector<unordered_set<pair<int, int>, PHash, PCompare>> graph = {
-//        {{1, 10}, {2, 35}, {3, 100}}, // Neighbors of vertex 0
-//        {{0, 10}, {2, 15}, {3, 5}},            // Neighbors of vertex 1
-//        {{0, 35}, {1, 15}},            // Neighbors of vertex 2
-//        {{0, 100}, {1, 5}}                     // Neighbors of vertex 3
-//    };
-//
-//    ScaledEStree estree(0, graph); 
-//
-//    estree.getDistances();
-//    
-//    estree.deleteEdge(0, 1);
-//    estree.getDistances();
-//    
-//    estree.deleteEdge(1, 2);
-//    estree.getDistances();
-//
-//    return 0;
-//}

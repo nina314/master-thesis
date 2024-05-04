@@ -82,18 +82,5 @@ int main(int argc, char *argv[]) {
         duration3 = duration_cast<microseconds>(stop - start);
 
         runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<< endl;
-        
-//        auto d1s = es.getDistances();
-//        auto d2s = dynamic2.d[0].Ds[source].distance;
-//        int es=0, dd=0;
-//        
-//        for(int i=0; i<dists.size(); i++) 
-//        {
-//            if(d1s[i] == dists[i]) es++;
-//            if(d2s[i] == dists[i]) dd++;
-//        }
-//        
-//        cout<<es<<" "<<dd<<" "<<dists.size()<<endl;
-        
     }
 }

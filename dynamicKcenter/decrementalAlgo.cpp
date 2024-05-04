@@ -8,29 +8,11 @@ DecrementalAlgo::DecrementalAlgo(vector<unordered_set<pair<int, int>, PHash, PCo
     originalGraph = graph;
     eps = epss;
     k = kk;
-//    lo = 1;
     r = 1;
 }
 
 vector<int> DecrementalAlgo::initialize()
 {
-//    hi = ceil(log2(originalGraph.size()) / log2(eps+1));
-//    while(lo < hi)
-//    {
-//        int mid = floor((lo+hi)/2);
-//        
-//        auto res = tryInitialize(pow(1+eps, mid), pow(1+eps, mid+1));
-//        
-//        if(res)
-//        {
-//            r = pow(1+eps, mid);
-//            hi = mid;
-//        }
-//        else lo = mid+1;
-//    }
-//    
-//    r2 = hi*(1+eps);
-    
     while(!tryInitialize(r, r*(1+eps)))
     {
         r = r*(1+eps);
@@ -105,7 +87,6 @@ vector<int> DecrementalAlgo::deleteEdge(int s, int d)
     originalGraph[d].erase({s, 1});
     
     if(tryDeleteEdge(s, d)) return M;
-//    lo++;
     r = r*(1+eps);
     return initialize();
 }
