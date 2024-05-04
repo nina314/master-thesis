@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void augmentedDijkstra(vector<unordered_set<pair<int, int>, PHash>>& graph, int start, vector<int>& distance, vector<unordered_set<int>>& buckets, int alpha) {
+void augmentedDijkstra(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<int>& distance, vector<unordered_set<int>>& buckets, int alpha) {
     int n = graph.size();
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
     distance[start] = 0;
@@ -31,7 +31,7 @@ void augmentedDijkstra(vector<unordered_set<pair<int, int>, PHash>>& graph, int 
     }
 }
 
-vector<int> gonzalezAlpha(vector<unordered_set<pair<int, int>, PHash>>& graph, int k, int alpha, int maxWeight) {
+vector<int> gonzalezAlpha(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int alpha, int maxWeight) {
     int n = graph.size();
     int B = ceil(log(n * maxWeight) / log(alpha));
 

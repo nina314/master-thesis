@@ -1,3 +1,6 @@
+#ifndef DHEAP
+#define DHEAP
+
 #include <queue>
 #include <unordered_map>
 
@@ -15,3 +18,5 @@ class DynamicHeap
     void cleanupQueue();
     pair<int, int> top();
 };
+
+#endif

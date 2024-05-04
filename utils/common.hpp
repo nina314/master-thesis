@@ -13,19 +13,21 @@ using namespace chrono;
 const int INF = numeric_limits<int>::max();
 
 struct PHash {
-    using value_type = std::pair<int, int>;
-
-    size_t operator()(const value_type& p) const {
-        return std::hash<int>{}(p.first);
-    }
-    
-    
+    size_t operator()(const pair<int, int>& p) const {
+        return hash<int>{}(p.first);
+    }    
 };
 
-void Dijkstra(vector<unordered_set<pair<int, int>, PHash>>& graph, int start, vector<int>& distances);
-vector<unordered_set<pair<int, int>, PHash>> buildGraphWithSources(vector<unordered_set<pair<int, int>, PHash>> graph, vector<int> centers);
-int cost(vector<unordered_set<pair<int, int>, PHash>> graph, vector<int> centers);
-vector<unordered_set<pair<int, int>, PHash>> getGraph(string name, int maxi = INF);
+struct PCompare {
+    bool operator () (const pair<int, int>& lhs, const pair<int, int>& rhs) const {
+        return lhs.first==rhs.first;
+    }
+};
+
+void Dijkstra(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<int>& distances);
+vector<unordered_set<pair<int, int>, PHash, PCompare>> buildGraphWithSources(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers);
+int cost(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers);
+vector<unordered_set<pair<int, int>, PHash, PCompare>> getGraph(string name, int nodes = INF);
 vector<pair<int, int>> getQueries(string name);
 
 template<typename Func, typename... Args>

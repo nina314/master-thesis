@@ -22,9 +22,9 @@ void union_sets(int parent[], int rank[], int x, int y) {
     }
 }
 
-vector<unordered_set<pair<int, int>, PHash>> kruskal_mst(vector<unordered_set<pair<int, int>, PHash>> adj) {
+vector<unordered_set<pair<int, int>, PHash, PCompare>> kruskal_mst(vector<unordered_set<pair<int, int>, PHash, PCompare>> adj) {
     int V = adj.size();
-    vector<unordered_set<pair<int, int>, PHash>> mst(V);
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> mst(V);
     int e = 0;
     vector<pair<int, pair<int, int>>> edges;
 

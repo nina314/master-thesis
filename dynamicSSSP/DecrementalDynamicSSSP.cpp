@@ -11,7 +11,7 @@
 #include <limits>
 #include <algorithm>
 
-DecrementalDynamicSSSP::DecrementalDynamicSSSP(vector<unordered_set<pair<int, int>, PHash>> &graph, int D, int eps, int src)
+DecrementalDynamicSSSP::DecrementalDynamicSSSP(vector<unordered_set<pair<int, int>, PHash, PCompare>> &graph, int D, int eps, int src)
 : graph(graph), D(D), n(graph.size()), eps(eps)
 {
     m = 0;

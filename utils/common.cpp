@@ -10,15 +10,18 @@
 #include <functional>
 #include <fstream>
 
-void Dijkstra(vector<unordered_set<pair<int, int>, PHash>>& graph, int start, vector<int>& distance) {
+void Dijkstra(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<int>& distance) {
     int n = graph.size();
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
     distance[start] = 0;
     pq.push({0, start});
+    vector<bool> visited(distance.size(), false);
     
     while (!pq.empty()) {
         auto [du, uId] = pq.top();
         pq.pop();
+        if(visited[uId]) continue;
+        visited[uId] = true;
         
         for (auto& e : graph[uId]) {
             int v = e.first;
@@ -31,7 +34,7 @@ void Dijkstra(vector<unordered_set<pair<int, int>, PHash>>& graph, int start, ve
     }
 }
 
-vector<unordered_set<pair<int, int>, PHash>> buildGraphWithSources(vector<unordered_set<pair<int, int>, PHash>> graph, vector<int> centers)
+vector<unordered_set<pair<int, int>, PHash, PCompare>> buildGraphWithSources(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers)
 {
     int source = centers[0];
     for(auto v: centers)
@@ -46,7 +49,7 @@ vector<unordered_set<pair<int, int>, PHash>> buildGraphWithSources(vector<unorde
 }
 
 
-int cost(vector<unordered_set<pair<int, int>, PHash>> graph, vector<int> centers)
+int cost(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers)
 {
     int source = centers[0];
     graph = buildGraphWithSources(graph, centers);
@@ -57,17 +60,17 @@ int cost(vector<unordered_set<pair<int, int>, PHash>> graph, vector<int> centers
     return *max_dist;
 }
 
-vector<unordered_set<pair<int, int>, PHash>> getGraph(string name, int maxi)
+vector<unordered_set<pair<int, int>, PHash, PCompare>> getGraph(string name, int nodes)
 {
-    vector<unordered_set<pair<int, int>, PHash>> adj;
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> adj;
     ifstream inputFile(name);
-    string a, b, c;
+    string a, b, c ="1";
     
     while(inputFile>>a>>b>>c)
     {
         int a1 = stoi(a), b1 = stoi(b), c1 = stoi(c);
         
-        if(a1>maxi || b1>maxi) continue;
+        if(a1>nodes || b1>nodes) continue;
         
         if (adj.size() <= max(a1, b1)) {
             adj.resize(max(a1, b1) + 1);

@@ -12,8 +12,8 @@ class DecrementalDynamicSSSP
 {
     public:
     int n; 
-    vector<unordered_set<pair<int, int>, PHash>> graph;
-    vector<unordered_set<pair<int, int>, PHash>> F;
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> F;
     vector<vector<int>> matrix;
     vector<int> priorities; 
     vector<int> distances; 
@@ -26,7 +26,7 @@ class DecrementalDynamicSSSP
     int eps; 
     int phi;
     
-    DecrementalDynamicSSSP(vector<unordered_set<pair<int, int>, PHash>> &graph, int D, int eps, int src);
+    DecrementalDynamicSSSP(vector<unordered_set<pair<int, int>, PHash, PCompare>> &graph, int D, int eps, int src);
     void initialize();
     vector<int> getDistances();
     void deleteEdge(int s, int d);

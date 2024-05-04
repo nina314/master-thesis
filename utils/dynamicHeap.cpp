@@ -2,7 +2,7 @@
 
 void DynamicHeap::push(pair<int,int> element)
 {
-    if(mapa[element.second] == element.first) return;
+    if(mapa.count(element.second) && mapa[element.second] == element.first) return;
     
     mapa[element.second] = element.first;
     pq.push(element);
@@ -27,13 +27,14 @@ void DynamicHeap::pop()
     mapa.erase(temp.second);
 }
 
-void DynamicHeap::changeFirst(int first, int second)
+void DynamicHeap::changeFirst(int value, int key)
 {
-    mapa[second] = first;
+    mapa[key] = value;
 }
 
 pair<int, int> DynamicHeap::top()
 {
     cleanupQueue();
+    if(pq.empty()) return {-1, -1};
     return pq.top();
 }

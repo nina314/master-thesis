@@ -18,9 +18,11 @@ class EStree
     int source;
     
     EStree();
-    EStree(vector<unordered_set<pair<int, int>, PHash>> graph, int src, int maxDepth = INF);
+    EStree(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int src, int maxDepth = INF);
     void deleteEdge(int s, int d, int maxDepth = INF);
+    void addEdge(int s, int d) ;
     vector<int> getDistances();
+    void updateDistances(int s);
 };
 
 #endif

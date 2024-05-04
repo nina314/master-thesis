@@ -3,7 +3,7 @@
 #include <unordered_set>
 #include <iostream>
 
-DecrementalAlgo::DecrementalAlgo(vector<unordered_set<pair<int, int>, PHash>>& graph, int epss, int kk)
+DecrementalAlgo::DecrementalAlgo(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int epss, int kk)
 {
     originalGraph = graph;
     eps = epss;

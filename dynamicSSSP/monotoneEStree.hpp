@@ -11,7 +11,7 @@
 class MonotoneEStree
 {
     int n, p, D, L;
-    vector<unordered_set<pair<int, int>, PHash>> H;
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> H;
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> Q;
     vector<DynamicHeap> N;
     vector<vector<int>> to_update;
@@ -21,7 +21,7 @@ class MonotoneEStree
     
     public:
     MonotoneEStree();
-    MonotoneEStree(int l, int src, vector<unordered_set<pair<int, int>, PHash>> H);
+    MonotoneEStree(int l, int src, vector<unordered_set<pair<int, int>, PHash, PCompare>> H);
     void updateH();
     void initialize();
     void deleteEdge(int u, int v);

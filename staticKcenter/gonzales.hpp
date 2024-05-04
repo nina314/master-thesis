@@ -10,4 +10,4 @@
 
 using namespace std;
 
-vector<int> gonzalezAlpha(vector<unordered_set<pair<int, int>, PHash>>& graph, int k, int alpha, int maxWeight);
+vector<int> gonzalezAlpha(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int alpha, int maxWeight);

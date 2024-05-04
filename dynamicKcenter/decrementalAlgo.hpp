@@ -13,10 +13,10 @@ class DecrementalAlgo
     int lo, hi;
     int k;
     vector<int> M;
-    vector<unordered_set<pair<int, int>, PHash>> connectedGraph;
-    vector<unordered_set<pair<int, int>, PHash>> originalGraph;
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> connectedGraph;
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> originalGraph;
     
-    DecrementalAlgo(vector<unordered_set<pair<int, int>, PHash>>& graph, int epss, int kk);
+    DecrementalAlgo(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int epss, int kk);
     vector<int> initialize();
     bool tryInitialize(int r, int r2);
     bool tryDeleteEdge(int s, int d);

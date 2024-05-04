@@ -9,7 +9,7 @@ using namespace std;
 
 EStree::EStree(){}
 
-EStree::EStree(vector<unordered_set<pair<int, int>, PHash>> graph, int src, int maxDepth)
+EStree::EStree(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int src, int maxDepth)
 {
     alpha.resize(graph.size());
     beta.resize(graph.size());
@@ -57,9 +57,31 @@ EStree::EStree(vector<unordered_set<pair<int, int>, PHash>> graph, int src, int 
                 alpha[nei].insert(current);
                 gamma[current].insert(nei);
             }
-        }
-        
+        }   
     }
+    
+//    for(int i=0; i<alpha.size(); i++)
+//    {
+//        cout<< i<<endl;
+//        cout<<"alpha\n";
+//        for(auto a: alpha[i])
+//        {
+//            cout<<a<<" ";
+//        }
+//        
+//        cout<<"\nbeta \n";
+//        for(auto b: beta[i])
+//        {
+//            cout<<b<<" ";
+//        }
+//        
+//        cout<<"\ngama\n";
+//        for(auto g: gamma[i])
+//        {
+//            cout<<g<<" ";
+//        }
+//        cout<<endl<<endl;
+//    }
 }
 
 void EStree::deleteEdge(int s, int d, int maxDepth)
@@ -125,6 +147,127 @@ void EStree::deleteEdge(int s, int d, int maxDepth)
             q.push(w);
         }
         
+    }
+}
+
+void EStree::addEdge(int s, int d) 
+{
+    if (distances[s] == distances[d]) {
+        beta[s].insert(d);
+        beta[d].insert(s);
+    }
+
+    if (distances[s] > distances[d]) swap(s, d);
+
+    alpha[d].insert(s);
+    gamma[s].insert(d);
+
+    distances[d] = distances[s]+1;
+    
+    queue<int> q;
+    q.push(d);
+
+    while (!q.empty()) {
+        auto w = q.front();
+        q.pop();
+
+//        distances[w]--;
+//        cout<<w<<endl;
+        
+        unordered_set<int> temp;
+        
+        for (auto nei : beta[w]) {
+            if(distances[nei]>distances[w])
+            {
+                beta[nei].erase(w);
+                alpha[nei].insert(w);
+                gamma[w].insert(nei);
+            }
+            else temp.insert(nei);
+        }
+
+        beta[w]=temp;
+        
+        for (auto nei : gamma[w]) {
+            if(distances[nei]>distances[w]+1)
+            {
+            distances[nei] = distances[w]+1;
+            q.push(nei);
+            }
+        }
+        
+        temp.clear();
+        
+        for (auto nei : alpha[w]) {
+            if(distances[nei]<distances[w])
+            {
+                temp.insert(nei);
+                continue;
+            }
+            
+            gamma[nei].erase(w);
+            
+            if(distances[nei]== distances[w])
+            {
+                beta[w].insert(nei);
+                beta[nei].insert(w);
+            }
+            else if(distances[nei]> distances[w])
+            {
+                distances[nei] = distances[w]+1;
+                alpha[nei].insert(w);
+                gamma[w].insert(nei);
+                q.push(nei);
+            }
+        }
+        alpha[w] = temp;
+        
+    }
+//        for(int i=0; i<alpha.size(); i++)
+//        {
+//            cout<< i<<endl;
+//            cout<<"alpha\n";
+//            for(auto a: alpha[i])
+//            {
+//                cout<<a<<" ";
+//            }
+//
+//            cout<<"\nbeta \n";
+//            for(auto b: beta[i])
+//            {
+//                cout<<b<<" ";
+//            }
+//
+//            cout<<"\ngama \n";
+//            for(auto g: gamma[i])
+//            {
+//                cout<<g<<" ";
+//            }
+//            cout<<endl<<endl;
+//        }
+    
+    
+//    updateDistances(s);
+}
+
+void EStree::updateDistances(int s)
+{
+    queue<int> q;
+    q.push(s);
+    
+    while(!q.empty())
+    {
+        int node = q.front();
+        q.pop();
+        
+        for(auto a: gamma[node])
+        {
+            if(distances[a]!=distances[node]+1)
+            {
+                distances[a]=distances[node]+1;
+                q.push(a);
+            }
+        }
     }
 }
 

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-vector<int> baselineGreedy(vector<unordered_set<pair<int, int>, PHash>> graph, int k, int maxWeight) {
+vector<int> baselineGreedy(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int k, int maxWeight) {
     int n = graph.size();
     vector<int> independentSet;
     vector<int> distances(n, INF);

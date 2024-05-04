@@ -1,139 +1,135 @@
 #include "IncrementalDynamicSSSP.hpp"
-
 #include "../utils/common.hpp"
-#include "DecrementalDynamicSSSP.hpp"
-#include "MonotoneEStree.hpp"
-#include "EStree.hpp"
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include <unordered_set>
-#include <unordered_map>
-#include <limits>
-#include <algorithm>
 
-IncrementalDynamicSSSP::IncrementalDynamicSSSP(vector<unordered_set<pair<int, int>, PHash>> &graph, int D, int eps, int src)
-: graph(graph), D(D), n(graph.size()), eps(eps)
-{
-    m = 0;
-    
-    for (auto &edges : graph) {
-        m += edges.size();
+using namespace std;
+
+IncrementalDynamicSSSP::IncrementalDynamicSSSP(int k, double eps, vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int m, int dMax)
+    : epsilon(eps), k(k), m(m), dMax(dMax) {
+    A.resize(k);
+    U.resize(k);
+    d.resize(k);
+    W.resize(k);
+    n.resize(k);
+    r.resize(k);
+        
+    for (int i=0; i< graph.size(); i++) {
+        A[0].insert(i);
     }
-    m /= 2;
-    
-    int log_n = log2(n);
-    p = ceil(log_n)/2;
 
-    priorities.resize(n, 0);
-    distances.resize(n);
-    matrix.resize(p+2, vector<int>(n, INF));
-    F.resize(n);
-    trees_from_nodes.resize(n);
-    trees_from_sets.resize(p+2);
+    auto [dd, mm] = getDepthForI(0);
+    d[0] = D(eps, dd, graph, mm);
 
-    phi = eps*floor(sqrt(n))/(p+1);
-    phi = max(phi, 1);
-
-    initialize();
+    for (int i = 1; i < k; ++i) {
+        A[i].clear();
+        auto [d_val, m_val] = getDepthForI(i);
+        d[i] = D(eps, d_val, graph, m_val);
+    }
 }
 
-void IncrementalDynamicSSSP::initialize() {
-    vector<unordered_set<int>> sets(p+2);
-    
-    for (int u = 0; u < n; ++u) {
-            sets[0].insert(u);
-        }
-        
-        for (int i = 1; i <p; i++) {
-            for (auto &edges : graph) {
-                for (auto &edge : edges) {
-                    
-                    if (rand() / static_cast<int>(RAND_MAX) < 1.0 / (pow(m, i / p))) {
-                        sets[i].insert(edge.first);
-                        sets[i].insert(edge.second);
-                        
-                        priorities[edge.first] = i;
-                        priorities[edge.second] = i;
-                    }
-                }
-            }
-        }
-        for (int i = 1; i < p; i++) {
-            
-            auto vec = vector<int>(sets[i].begin(), sets[i].end());
-            auto temp = buildGraphWithSources(graph, vec);
-            trees_from_sets[i] = EStree(temp, vec[0]);
-            matrix[i] = trees_from_sets[i].getDistances();
-        }
-    
-        for(int u = 0; u<n; u++)
-        {
-            auto maxDepth = matrix[priorities[u]+1][u];
-            trees_from_nodes[u] = EStree(graph, u, maxDepth);
+pair<int, int> IncrementalDynamicSSSP::getDepthForI(int i) {
+    auto mi = 2 * pow(m, (i + 1) / k);
+    int power = ceil(log(pow(3 + 2 * epsilon, i) * dMax) / log(1 + epsilon));
+    auto di = pow(1 + epsilon, power);
+    return make_pair(di, mi);
+}
 
-            auto dists = trees_from_nodes[u].getDistances();
-
-            for(int i=0; i<dists.size(); i++)
-            {
-                if(dists[i]>maxDepth) continue;
-                
-                auto newValue = dists[i] - dists[i] % phi;
-                F[u].insert({i, newValue});
-            }
-        }   
-    
-    return;
+void IncrementalDynamicSSSP::insert(int v1, int v2, int weight) {
+    for (int i = 0; i < k; ++i) {
+        U[i].clear();
     }
 
-void IncrementalDynamicSSSP::addEdge(int s, int d) {
-        auto prev = matrix;
-        for (int i = 1; i < p; i++) {
-            trees_from_sets[i].deleteEdge(s, d, D); 
-            matrix[i] = trees_from_sets[i].getDistances();
-        }
-        vector<unordered_map<int, int>> F2(n);
-        
-        for(int u = 0; u<n; u++)
-        {
-            int potDepth = pow(2, floor(log(matrix[priorities[u]+1][u])));
-            int prevDepth = pow(2, floor(log(prev[priorities[u]+1][u])));
-            auto maxDepth = min(D, potDepth);
-            if(potDepth > prevDepth) 
-                trees_from_nodes[u] = EStree(graph, u, maxDepth);
-            
-            trees_from_nodes[u].deleteEdge(s, d, maxDepth);
-            auto dists = trees_from_nodes[u].getDistances();
-            
-            for(int i=0; i<dists.size(); i++)
-            {
-                if(dists[i]>maxDepth) continue;
-                
-                auto newValue = dists[i] - dists[i] % phi;
-                
-                F2[u][i]= newValue;
-            }
-        }
-    
-        for(int i=0; i<F.size(); i++)
-        {
-            for(auto& edge: F[i])
-            {
-                if(F2[i].find(edge.first) == F2[i].end())
-                {
-                    mes.deleteEdge(i, edge.first);
-                }
-                else if(F2[i][edge.first] > edge.second)
-                {
-                    mes.increase(i, edge.first, F2[i][edge.first]);
-                }
-            }
-        }     
-    }
-                
-
-    vector<int> IncrementalDynamicSSSP::getDistances()
+    for (int i = 0; i < k; ++i)
     {
-        return mes.getDistances();
+        A[i].insert(U[i].begin(), U[i].end());
+
+        auto T = d[i].addEdge(v1, v2, weight);
+        cout<<"T "<<T.size()<<endl;
+        unordered_set<int> setT;
+
+        for (auto& [u, tree] : T) setT.insert(u);
+        
+        auto [dd, mm] = getDepthForI(i);
+        int j = 1 + log(dd) / log(1 + epsilon);
+        int pot = -1;
+
+        auto nonEmpty = false;
+        for (auto& [u, tree] : T) {
+            for (auto [k, p] : tree) {
+                if (W[i].count(k)) {
+                    pot = k;
+                    nonEmpty = true;
+                }
+            }
+
+            if (nonEmpty) {
+                n[i][u] = pot;
+            } else {
+                W[i].insert(setT.begin(), setT.end());
+                for (auto v : setT)
+                {
+                    r[i][v] = u;
+                }
+                U[i+1].insert(u);
+            }
+        }
+    
+//        cout<<"A[]"<<i<<endl;
+//        for(auto a: A[i]) cout<<a<<" ";
+//        cout<<endl;
     }
+    
+    
+}
+
+int IncrementalDynamicSSSP::query(int u, int v) {
+    int u0 = u;
+    int s0 = 0;
+
+    for (int i = 0; i < k; ++i) {
+                
+//        cout<<"D[]"<<i<<endl;
+//        for(auto d: d[i].Ds[u0].distance) cout<<d<<" ";
+        cout<<endl;
+        if (d[i].Ds[u0].distance[v]!=numeric_limits<int>::max()/3) {
+            return s0 + d[i].Ds[u0].distance[v];
+        }
+        if (!A[i + 1].count(u0)) {
+            auto [dd, mm] = getDepthForI(i);
+            int j = 1 + log(dd) / log(1 + epsilon);
+
+            auto w = n[i][u0];
+            s0 = s0 + d[i].Ds[u0].distance[w] + d[i].Ds[r[i][w]].distance[w];
+            u0 = r[i][w];
+        }
+    }
+    return s0;
+}
+
+//int main() {
+//
+////    unordered_map<int, unordered_map<int, int>> graph = {
+////        {0, {{1, 10}, {2, 35}, {3, 100}}},
+////        {1, {{0, 10}, {2, 15}}},
+////        {2, {{0, 35}, {1, 15}}},
+////        {3, {{0, 100}}}
+////    };
+//    vector<unordered_set<pair<int, int>, PHash, PCompare>> graph = {
+//    {{{1, 10}, {2, 35}, {3, 100}}},    
+//    {{{0, 10}, {2, 15}}},       
+//    {{{0, 35}, {1, 15}}},       
+//    {{{0, 100}}}           
+//};
+//    
+//    
+//
+//    IncrementalDynamicSSSP sssp(3, 1, graph, 100, 1000);
+//    cout<<"t"<<sssp.query(0, 1)<<endl;
+//    sssp.insert(1, 0, 1);
+//    
+//    cout<<"t"<<sssp.query(0, 1)<<endl;
+//    
+//    cout<<"t"<<sssp.query(0, 2)<<endl;
+//    cout<<"t"<<sssp.query(3, 2)<<endl;
+//
+//    return 0;
+//}

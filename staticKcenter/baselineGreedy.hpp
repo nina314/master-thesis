@@ -4,4 +4,4 @@
 
 using namespace std;
 
-vector<int> baselineGreedy(vector<unordered_set<pair<int, int>, PHash>> graph, int k, int maxWeight);
+vector<int> baselineGreedy(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int k, int maxWeight);

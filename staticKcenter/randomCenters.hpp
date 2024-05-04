@@ -4,4 +4,4 @@
 
 using namespace std;
 
-vector<int> randomCenters(vector<unordered_set<pair<int, int>, PHash>>& graph, int k);
+vector<int> randomCenters(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k);

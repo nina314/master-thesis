@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void makeFiles(vector<unordered_set<pair<int, int>, PHash>>& spanningTree, string name, int n)
+void makeFiles(vector<unordered_set<pair<int, int>, PHash, PCompare>>& spanningTree, string name, int n)
 {
     ofstream queries("testingData/cleanedFiles/"+name+"-Queries.txt");
     ofstream edges("testingData/cleanedFiles/"+name+"-Edges.txt");
@@ -44,7 +44,7 @@ void makeFiles(vector<unordered_set<pair<int, int>, PHash>>& spanningTree, strin
     }
 }
 
-void bfs(vector<unordered_set<pair<int, int>, PHash>>& graph, int start, vector<bool>& visited) {
+void bfs(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<bool>& visited) {
     queue<int> q;
     q.push(start);
     visited[start] = true;
@@ -62,7 +62,7 @@ void bfs(vector<unordered_set<pair<int, int>, PHash>>& graph, int start, vector<
     }
 }
 
-void makeConnected(vector<unordered_set<pair<int, int>, PHash>>& graph)
+void makeConnected(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph)
 {
     vector<bool> visited(graph.size(), false);
     
@@ -80,9 +80,9 @@ void makeConnected(vector<unordered_set<pair<int, int>, PHash>>& graph)
     }
 }
 
-vector<unordered_set<pair<int, int>, PHash>> makeSequential(int nodes)
+vector<unordered_set<pair<int, int>, PHash, PCompare>> makeSequential(int nodes)
 {
-    vector<unordered_set<pair<int, int>, PHash>> graph(nodes+1);
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> graph(nodes+1);
     
      for (int i = 0; i <nodes ; ++i) {
         graph[i].insert({i + 1, 1}); 

@@ -9,7 +9,7 @@
 
 MonotoneEStree::MonotoneEStree(){}
 
-MonotoneEStree::MonotoneEStree(int L2, int s, vector<unordered_set<pair<int, int>, PHash>> H2)
+MonotoneEStree::MonotoneEStree(int L2, int s, vector<unordered_set<pair<int, int>, PHash, PCompare>> H2)
 {
     int n = H2.size();
     N.resize(n);
