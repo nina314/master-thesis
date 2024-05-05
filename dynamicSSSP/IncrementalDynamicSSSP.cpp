@@ -43,7 +43,6 @@ void IncrementalDynamicSSSP::insert(int v1, int v2, int weight) {
         A[i].insert(U[i].begin(), U[i].end());
 
         auto T = d[i].addEdge(v1, v2, weight);
-        cout<<"T "<<T.size()<<endl;
         unordered_set<int> setT;
 
         for (auto& [u, tree] : T) setT.insert(u);
@@ -80,8 +79,6 @@ int IncrementalDynamicSSSP::query(int u, int v) {
     int s0 = 0;
 
     for (int i = 0; i < k; ++i) {
-                
-        cout<<endl;
         if (d[i].Ds[u0].distance[v]!=numeric_limits<int>::max()/3) {
             return s0 + d[i].Ds[u0].distance[v];
         }

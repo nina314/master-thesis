@@ -16,10 +16,10 @@
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
-    string name = argv[1]; // sequential
-    int source = stoi(argv[2]); // 0
-    int D = stoi(argv[3]); // 15
-    int eps = stoi(argv[4]); // 1
+    string name = argv[1];
+    int source = stoi(argv[2]);
+    int D = stoi(argv[3]);
+    int eps = stoi(argv[4]); 
     int m = 10;
 
     ofstream runtimesDec("results/" + name + "-decrementalDynamicSSSPRuntimes.txt");

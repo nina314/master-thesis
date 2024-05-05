@@ -23,4 +23,4 @@ public:
     int getDistance(int v1, int v2);
 };
 
-#endif // D_HPP
+#endif

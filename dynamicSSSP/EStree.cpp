@@ -146,9 +146,6 @@ void EStree::addEdge(int s, int d)
     while (!q.empty()) {
         auto w = q.front();
         q.pop();
-
-//        distances[w]--;
-//        cout<<w<<endl;
         
         unordered_set<int> temp;
         
@@ -198,52 +195,6 @@ void EStree::addEdge(int s, int d)
         }
         alpha[w] = temp;
         
-    }
-//        for(int i=0; i<alpha.size(); i++)
-//        {
-//            cout<< i<<endl;
-//            cout<<"alpha\n";
-//            for(auto a: alpha[i])
-//            {
-//                cout<<a<<" ";
-//            }
-//
-//            cout<<"\nbeta \n";
-//            for(auto b: beta[i])
-//            {
-//                cout<<b<<" ";
-//            }
-//
-//            cout<<"\ngama \n";
-//            for(auto g: gamma[i])
-//            {
-//                cout<<g<<" ";
-//            }
-//            cout<<endl<<endl;
-//        }
-    
-    
-//    updateDistances(s);
-}
-
-void EStree::updateDistances(int s)
-{
-    queue<int> q;
-    q.push(s);
-    
-    while(!q.empty())
-    {
-        int node = q.front();
-        q.pop();
-        
-        for(auto a: gamma[node])
-        {
-            if(distances[a]!=distances[node]+1)
-            {
-                distances[a]=distances[node]+1;
-                q.push(a);
-            }
-        }
     }
 }
 

@@ -1,5 +1,5 @@
-#ifndef INCREMENTALDYNAMICSSSP_HPP
-#define INCREMENTALDYNAMICSSSP_HPP
+#ifndef IC
+#define IC
 
 #include "D.hpp"
 #include "Dsource.hpp"
@@ -28,4 +28,4 @@ public:
     int query(int u, int v);
 };
 
-#endif // INCREMENTALDYNAMICSSSP_HPP
+#endif

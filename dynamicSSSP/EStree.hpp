@@ -22,7 +22,6 @@ class EStree
     void deleteEdge(int s, int d, int maxDepth = INF);
     void addEdge(int s, int d) ;
     vector<int> getDistances();
-    void updateDistances(int s);
 };
 
 #endif

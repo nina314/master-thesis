@@ -108,7 +108,8 @@ pair<unordered_set<int>, unordered_set<int>> Dsource::addEdge(int u, int v, int 
 //            if (m > mm) break;
         }
 
-        for (const auto& kvp : graph[u]) {
+        for (const auto& kvp : graph[u]) 
+        {
             int v = kvp.first;
             int weight = kvp.second;
 
@@ -124,30 +125,30 @@ pair<unordered_set<int>, unordered_set<int>> Dsource::addEdge(int u, int v, int 
         }
     }
 
-        if(!pq.empty())
-        {
-            auto dist = pq.top().first;
-            int power = floor(log(dist) / log(1 + epsilon));
-            maxDegree = pow(1 + epsilon, power);
-        }
-        
-        for (auto it = parent.begin(); it != parent.end();) {
-            auto [kid, par] = *it;
+    if(!pq.empty())
+    {
+        auto dist = pq.top().first;
+        int power = floor(log(dist) / log(1 + epsilon));
+        maxDegree = pow(1 + epsilon, power);
+    }
 
-            if (distance[kid] > maxDegree) {
-                m -= graph[kid].size();
-                if (toAdd.find(kid)!=toAdd.end())
-                    toAdd.erase(kid);
-                else
-                {
-                    toRemove.insert(kid);
-                }
-                
-                it = parent.erase(it);
-            } else {
-                ++it;
+    for (auto it = parent.begin(); it != parent.end();) {
+        auto [kid, par] = *it;
+
+        if (distance[kid] > maxDegree) {
+            m -= graph[kid].size();
+            if (toAdd.find(kid)!=toAdd.end())
+                toAdd.erase(kid);
+            else
+            {
+                toRemove.insert(kid);
             }
+
+            it = parent.erase(it);
+        } else {
+            ++it;
         }
+    }
     
     return {toAdd, toRemove};
 }

@@ -1,5 +1,5 @@
-#ifndef SCALED_ESTREE_HPP
-#define SCALED_ESTREE_HPP
+#ifndef SCALED_ES
+#define SCALED_ES
 
 #include "EStree.hpp"
 #include "../utils/DynamicHeap.hpp"
@@ -25,4 +25,4 @@ public:
     vector<int> getDistances();
 };
 
-#endif // SCALED_ESTREE_HPP
+#endif

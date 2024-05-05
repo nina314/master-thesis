@@ -15,14 +15,14 @@
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
-    string name = argv[1]; // sequential
-    int source = stoi(argv[2]); // 0
-    int D = stoi(argv[3]); // 15
-    int eps = stoi(argv[4]); // 1
+    string name = argv[1];
+    int source = stoi(argv[2]);
+    int D = stoi(argv[3]); 
+    int eps = stoi(argv[4]);
     int m = 10, k = 3;
 
     ofstream runtimesInc("results/" + name + "-incrementalDynamicSSSPRuntimes.txt");
-    runtimesInc << "ESTree IncrementalDynamicSSSP Dijkstra Dsource" << endl;
+    runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource" << endl;
 
     auto adj = getGraph("testingData/cleanedFiles/" + name + "-Edges.txt");
     auto edgesToRemove = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
