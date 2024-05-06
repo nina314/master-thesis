@@ -10,7 +10,7 @@
 
 using namespace std;
 
-vector<int> bottleneckFixed(vector<unordered_set<pair<int, int>, PHash>> graph, int r) {
+vector<int> bottleneckFixed(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int r) {
     int n = graph.size();
     vector<int> independentSet;
     vector<int> distance(n, INF);
@@ -49,7 +49,7 @@ vector<int> bottleneckFixed(vector<unordered_set<pair<int, int>, PHash>> graph, 
     return independentSet;
 }
 
-vector<int> bottleneck(vector<unordered_set<pair<int, int>, PHash>>& graph, int k, int maxWeight) {
+vector<int> bottleneck(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int maxWeight) {
     int lo = 0, hi = maxWeight*graph.size();
     vector<int> independentSet, res;
     int cost;
