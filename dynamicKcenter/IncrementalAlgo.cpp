@@ -1,41 +1,4 @@
-#include "../utils/common.hpp"
-#include "../maximalndependentSet/FastMIS.hpp"
-#include "../dynamicSSSP/Dsource.hpp"
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <algorithm>
-#include <cmath>
-#include <random>
-
-using namespace std;
-
-class IncrementalAlgo {
-public:
-    IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int eps);
-    void insertEdge(int u, int v);
-    FastMIS B;
-    bool kBoundedRulingSet(int u, int v);
-    
-private:
-    int i;
-    vector<unordered_set<int>> L;
-    vector<unordered_set<int>> S;
-    vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
-    int k, n;
-    int r, r2;
-    vector<Dsource> Abig;
-    vector<Dsource> Asmall;
-    bool initialized;
-    unordered_set<int> S_union;
-    unordered_set<int> V;
-    vector<unordered_set<pair<int, int>, PHash, PCompare>> H;
-    vector<unordered_set<pair<int, int>, PHash, PCompare>> Hs;
-    int eps;
-
-    vector<int> getCenter();
-    unordered_set<int> sampleVertices(const unordered_set<int>& L_prev, double probability);
-};
+#include "IncrementalAlgo.hpp"
 
 IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int eps) 
     : graph(graph), k(k), i(0), eps(eps) {
@@ -48,8 +11,9 @@ IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHas
 
     do
     {
+        i=0;
         r2 = (1+eps)*r2;
-
+        
         initialized = false;
         L.clear();
         S.clear();
@@ -59,12 +23,14 @@ IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHas
 
         L.push_back(V);
         L.resize(n);
+        
         S.resize(n);
         Abig.resize(n);
         Asmall.resize(n);
         H.resize(n);
         
     } while(!kBoundedRulingSet(0, 0));
+        cout<<r2<<endl;
 }
 
 unordered_set<int> IncrementalAlgo::sampleVertices(const unordered_set<int>& L_prev, double probability) 
@@ -93,7 +59,7 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
                 S.resize(i+1);
             
             S[i] = sampleVertices(L[i-1], probability);
-
+            
             unordered_set<int> S_i;
 
             for (int j = 1; j <= i; ++j) 
@@ -150,7 +116,7 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
                 
             B = FastMIS(H, S_union); 
             initialized = true;
-            return B.mis.size()>k;
+            return B.mis.size()<k;
         } 
         else 
         {
@@ -169,10 +135,10 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
                     }
                 }
             }
-            return B.mis.size()>k;
+            return B.mis.size()<k;
         }
     }
-    return B.mis.size()>k;
+    return B.mis.size()<k;
 }
 
 void IncrementalAlgo::insertEdge(int u, int v) 
@@ -202,7 +168,8 @@ void IncrementalAlgo::insertEdge(int u, int v)
     
     while(!kBoundedRulingSet(u, v))
     {
-        r2 = (1+eps)*r2;
+        i=0;
+        r2 = r2/(1+eps);
         
         initialized = false;
         L.clear();
@@ -218,44 +185,13 @@ void IncrementalAlgo::insertEdge(int u, int v)
         Asmall.resize(n);
         H.resize(n);
     }
+        cout<<r2<<endl;
 }
 
-vector<int> IncrementalAlgo::getCenter() 
+vector<int> IncrementalAlgo::getCenters() 
 {
     vector<int> res;
     
     for(auto mm: B.mis) res.push_back(mm);
     return res;
-}
-
-int main() {
-    unsigned seed = 12345;
-    mt19937 gen(seed);
-    uniform_int_distribution<int> weight_dist(10, 50);
-
-    int n = 61;
-
-    vector<unordered_set<pair<int, int>, PHash, PCompare>> adj(n);
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = i + 1; j < n; ++j) {
-            int weight = weight_dist(gen);
-            if(weight>10)
-            {
-                adj[i].insert({j, weight});
-                adj[j].insert({i, weight});
-            }
-        }
-    }
-
-    int k = 15;
-    
-    int eps = 1;
-    IncrementalAlgo ia(adj, k, eps);
-//    for(auto mm: ia.B.mis) cout<<mm<<" ";
-    
-    ia.insertEdge(4, 3);
-//    for(auto mm: ia.B.mis) cout<<mm<<" ";
-    
-    return 0;
 }

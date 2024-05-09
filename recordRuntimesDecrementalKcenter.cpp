@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
     ofstream runtimes("results/" + name + "-staticKcenterRuntimes.txt");
     ofstream costs("results/" + name + "-staticKcenterCosts.txt");
 
-    runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Random Dynamic" << endl;
-    costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Random Dynamic" << endl;
+    runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic" << endl;
+    costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic" << endl;
 
     int maxWeight = 1;
 
