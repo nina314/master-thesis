@@ -24,14 +24,13 @@ public:
 private:
     int i;
     vector<unordered_set<int>> L;
-    vector<unordered_set<int>> S;
     vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
     int k, n;
     int r, r2;
     vector<Dsource> Abig;
     vector<Dsource> Asmall;
     bool initialized;
-    unordered_set<int> S_union;
+    unordered_set<int> S_i, S_union;
     unordered_set<int> V;
     vector<unordered_set<pair<int, int>, PHash, PCompare>> H;
     vector<unordered_set<pair<int, int>, PHash, PCompare>> Hs;

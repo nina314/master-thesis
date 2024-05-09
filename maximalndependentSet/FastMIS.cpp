@@ -51,8 +51,21 @@ FastMIS::FastMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, 
 }
 
 set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
-    mis.clear();
+    mis = set<int, CustomCompare>(pi); 
     int i=0, f=0;
+    
+//              cout<<"nodes \n";
+//            for(auto mm: mis) cout<<"nodes"<<" ";
+//            cout<<endl;
+//    
+//    cout<<"H \n";
+//            for(int i=0; i<G.size(); i++)
+//            {
+//                cout<<i<<endl;
+//                for(auto e: G[i]) cout<<e.first<<" ";
+//                cout<<endl;
+//            }
+//            cout<<endl;
     
     for (auto v: VV) {
         if (!nodes.empty() && !nodes.count(v)) continue;
@@ -70,6 +83,7 @@ set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
         if (!dominated) 
         {
             mis.insert(v);
+//            cout<<"insert "<<v<<endl;
         }
         
         
@@ -159,6 +173,8 @@ unordered_set<int> FastMIS::findInfluencedSet(int u, int v, int b) {
 }
 
 void FastMIS::update(int u, int v) {
+//    cout<<pi[v] <<" "<< pi[u]<<endl;
+    
     if (pi[v] < pi[u]) swap(u, v);
     
     
@@ -166,11 +182,10 @@ void FastMIS::update(int u, int v) {
     
     if(pi[u]!=0)
         a = floor(log2(pi[u]));
-
-    int b = floor(log2(pi[v]));
-
-    auto S = findInfluencedSet(u, v, b);
     
+    int b = floor(log2(pi[v]));
+    
+    auto S = findInfluencedSet(u, v, b);
         
     if (S.empty()) {
         int index = -1;

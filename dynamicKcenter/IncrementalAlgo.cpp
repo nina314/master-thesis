@@ -1,71 +1,65 @@
 #include "IncrementalAlgo.hpp"
+#include <iostream>
 
-IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int eps) 
+using namespace std;
+
+IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int eps)
     : graph(graph), k(k), i(0), eps(eps) {
-    
     n = graph.size();
     for (int j = 0; j < n; j++)
         V.insert(j);
-        
+
     r2 = 1;
 
     do
     {
-        i=0;
-        r2 = (1+eps)*r2;
-        
+        i = 0;
+        r2 = (1 + eps) * r2;
+        cout << r2 << endl;
+
         initialized = false;
         L.clear();
-        S.clear();
-        Abig.clear();
-        Asmall.clear();
-        H.clear();
-
         L.push_back(V);
         L.resize(n);
-        
-        S.resize(n);
+
+        S_i.clear();
         Abig.resize(n);
         Asmall.resize(n);
         H.resize(n);
-        
-    } while(!kBoundedRulingSet(0, 0));
-        cout<<r2<<endl;
+
+    } while (!kBoundedRulingSet(0, 0));
+
+    cout << r2 << endl;
 }
 
-unordered_set<int> IncrementalAlgo::sampleVertices(const unordered_set<int>& L_prev, double probability) 
+unordered_set<int> IncrementalAlgo::sampleVertices(const unordered_set<int>& L_prev, double probability)
 {
-    unordered_set<int> S_i;
-    for (int vertex : L_prev) 
+    unordered_set<int> Ss;
+    for (int vertex : L_prev)
     {
-        if ((double)rand() / RAND_MAX < probability) 
+        if ((double)rand() / RAND_MAX < probability)
         {
-            S_i.insert(vertex);
+            Ss.insert(vertex);
         }
     }
-    return S_i;
+    return Ss;
 }
 
-bool IncrementalAlgo::kBoundedRulingSet(int u, int v) 
+bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
 {
-    if (L[i].size() > 4*k) 
+    if (L[i].size() > 4 * k)
     {
-        if (i == 0 || L[i].size() <= L[i - 1].size() / 2) 
+        if (i == 0 || L[i].size() <= L[i - 1].size() / 2)
         {
             i++;
             double gamma = L[i - 1].size() / (2 * k) - 1;
             double probability = min(10.0 * log(graph.size()) / gamma, 1.0);
-            if (S.size() <= i)
-                S.resize(i+1);
-            
-            S[i] = sampleVertices(L[i-1], probability);
-            
-            unordered_set<int> S_i;
 
-            for (int j = 1; j <= i; ++j) 
-            {
-                S_i.insert(S[j].begin(), S[j].end());
-            }
+            auto si = sampleVertices(L[i - 1], probability);
+
+            S_i.insert(si.begin(), si.end());
+//            cout<<i<<endl;
+//            for(auto s_i: S_i) cout<<s_i<<" ";
 
             vector<int> centers;
             for (auto c : S_i)
@@ -73,125 +67,157 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
 
             auto connected_graph = buildGraphWithSources(graph, centers);
             Abig[i] = Dsource(eps, INF, centers[0], connected_graph, INF);
+
             auto dists = Abig[i].distance;
-            for (int j = 0; j < graph.size(); j++) 
+            for (int j = 0; j < graph.size(); j++)
             {
                 if (dists[j] > r2)
                     L[i].insert(j);
             }
             return kBoundedRulingSet(u, v);
-        } 
-        else 
+        }
+        else
         {
             return false;
         }
-    } 
-    else 
+    }
+    else
     {
-        if (!initialized) 
+        if (!initialized)
         {
             int d = i;
             S_union = L[d];
-            for (int j = 1; j <= d; ++j) 
-            {
-                S_union.insert(S[j].begin(), S[j].end());
-            }
-
-            Hs.clear();
-            Hs.resize(graph.size());
-
-            for (auto s : S_union) 
+            S_union.insert(S_i.begin(), S_i.end());
+            
+            for (auto s : S_union)
             {
                 Asmall[s] = Dsource(eps, INF, s, graph, INF);
                 auto dists = Asmall[s].distance;
 
-                for (int j = 0; j < dists.size(); j++) 
+                for (auto s2: S_union)
                 {
-                    if (dists[j] < r2) {
-                        Hs[s].insert({j, dists[j]});
-                        H[s].insert({j, dists[j]});
+                    if (dists[s2] < r2)
+                    {
+                        H[s].insert({s2, dists[s2]});
+                        H[s2].insert({s, dists[s2]});
                     }
                 }
             }
-                
-            B = FastMIS(H, S_union); 
+
+//            cout<<"H \n";
+//            for(int i=0; i<H.size(); i++)
+//            {
+//                cout<<i<<endl;
+//                for(auto e: H[i]) cout<<e.first<<" ";
+//                cout<<endl;
+//            }
+//            cout<<endl;
+//            cout<<"S \n";
+//            for(auto mm: S_union) cout<<mm<<" ";
+//            cout<<endl;
+//            
+//                        cout<<"MIS \n";
+//            for(auto mm: B.mis) cout<<mm<<" ";
+//            cout<<endl;
+//            
+            B = FastMIS(H, S_union);
             initialized = true;
-            return B.mis.size()<k;
-        } 
-        else 
+
+            return B.mis.size() < k;
+        }
+        else
         {
-            for (auto s : S_union) 
+//        cout<<" not here";
+            for (auto s : S_union)
             {
                 Asmall[s].addEdge(u, v, 1);
                 auto dists = Asmall[s].distance;
-                
-                for (int j = s; j < dists.size(); j++) 
+
+                for (auto s2: S_union)
                 {
-                    if (dists[j] < r2) 
+                    if (dists[s2] < r2)
                     {
-                        Hs[i].insert({j, dists[j]});
-                        Hs[j].insert({i, dists[j]});
-                        B.update(i, j);
+                        H[s].insert({s2, dists[s2]});
+                        H[s2].insert({s, dists[s2]});
+//                        cout<<s<<" "<<s2<<endl;
+                        if(s!=s2)
+                            B.update(s, s2);
                     }
                 }
             }
-            return B.mis.size()<k;
+            return B.mis.size() < k;
         }
     }
-    return B.mis.size()<k;
+    return B.mis.size() < k;
 }
 
-void IncrementalAlgo::insertEdge(int u, int v) 
+void IncrementalAlgo::insertEdge(int u, int v)
 {
     graph[u].insert({v, 1});
     graph[v].insert({u, 1});
 
-    if(Abig[i].distance.size()>0) 
+    if (Abig[i].distance.size() > 0)
     {
         Abig[i].addEdge(u, v, 1);
 
         auto dists = Abig[i].distance;
 
-        for (auto it = L[i].begin(); it != L[i].end();) 
+        for (auto it = L[i].begin(); it != L[i].end();)
         {
             auto l = *it;
-            if (dists[l] < r2) 
+            if (dists[l] < r2)
             {
                 it = L[i].erase(it);
-            } 
-            else 
+            }
+            else
             {
                 ++it;
             }
         }
     }
-    
-    while(!kBoundedRulingSet(u, v))
-    {
-        i=0;
-        r2 = r2/(1+eps);
-        
-        initialized = false;
-        L.clear();
-        S.clear();
-        Abig.clear();
-        Asmall.clear();
-        H.clear();
 
-        L.push_back(V);
-        L.resize(n);
-        S.resize(n);
-        Abig.resize(n);
-        Asmall.resize(n);
-        H.resize(n);
-    }
-        cout<<r2<<endl;
+    kBoundedRulingSet(u, v);
 }
 
-vector<int> IncrementalAlgo::getCenters() 
+vector<int> IncrementalAlgo::getCenters()
 {
     vector<int> res;
-    
-    for(auto mm: B.mis) res.push_back(mm);
+
+    for (auto mm : B.mis)
+        res.push_back(mm);
     return res;
 }
+
+
+
+//int main() {
+//    unsigned seed = 12345;
+//    mt19937 gen(seed);
+//    uniform_int_distribution<int> weight_dist(10, 50);
+//
+//    int n = 61;
+//
+//    vector<unordered_set<pair<int, int>, PHash, PCompare>> adj(n);
+//
+//    for (int i = 0; i < n; ++i) {
+//        for (int j = i + 1; j < n; ++j) {
+//            int weight = weight_dist(gen);
+//            if(weight>10)
+//            {
+//                adj[i].insert({j, weight});
+//                adj[j].insert({i, weight});
+//            }
+//        }
+//    }
+//
+//    int k = 15;
+//    
+//    int eps = 1;
+//    IncrementalAlgo ia(adj, k, eps);
+////    for(auto mm: ia.B.mis) cout<<mm<<" ";
+//    
+//    ia.insertEdge(4, 3);
+////    for(auto mm: ia.B.mis) cout<<mm<<" ";
+//    
+//    return 0;
+//}
