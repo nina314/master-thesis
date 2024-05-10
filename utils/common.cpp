@@ -89,16 +89,16 @@ vector<unordered_set<pair<int, int>, PHash, PCompare>> getGraph(string name, int
     return adj;
 }
 
-vector<pair<int, int>> getQueries(string name)
+vector<pair<int, pair<int, int>>> getQueries(string name)
 {
-    vector<pair<int, int>> ques;
+    vector<pair<int, pair<int, int>>> ques;
     ifstream inputFile(name);
-    string a, b;
+    string a, b, c;
     
-    while(inputFile>>a>>b)
+    while(inputFile>>a>>b>>c)
     {
-        int a1 = stoi(a), b1 = stoi(b);
-        ques.push_back({a1, b1});
+        int a1 = stoi(a), b1 = stoi(b), c1 = stoi(c);
+        ques.push_back({a1, {b1, c1}});
     }
     
     return ques;

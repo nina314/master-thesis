@@ -28,7 +28,7 @@ void Dijkstra(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int
 vector<unordered_set<pair<int, int>, PHash, PCompare>> buildGraphWithSources(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers);
 int cost(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers);
 vector<unordered_set<pair<int, int>, PHash, PCompare>> getGraph(string name, int nodes = INF);
-vector<pair<int, int>> getQueries(string name);
+vector<pair<int, pair<int, int>>> getQueries(string name);
 
 template<typename Func, typename... Args>
 pair<double, decltype(declval<Func>()(declval<Args>()...))> getDuration(Func func, Args&&... args) 
