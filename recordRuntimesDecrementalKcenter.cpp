@@ -29,19 +29,24 @@ int main(int argc, char *argv[]) {
     int maxWeight = 1;
 
     auto graph = getGraph("testingData/cleanedFiles/" + name + "-Edges.txt");
-    auto edgesToRemove = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
 
+    for (auto [s, p] : edgesToAdd) {
+        auto [d, w] = p;
+        
+        graph[s].insert({d, w});
+        graph[d].insert({s, w});
+    }
+    
     auto da = DecrementalAlgo(graph, eps, k);
     da.initialize();
 
-    for (auto [s, d] : edgesToRemove) {
-        graph[s].erase({d, 1});
-        graph[d].erase({s, 1});
-    }
-    
-    for (auto [s, d] : edgesToRemove) {
-        graph[s].insert({d, 1});
-        graph[d].insert({s, 1});
+
+    for (auto [s, p] : edgesToAdd) {
+        auto [d, w] = p;
+        
+        graph[s].erase({d, w});
+        graph[d].erase({s, w});
 
         auto start = high_resolution_clock::now();
         auto centers1 = distanceRIndependent(graph, k, maxWeight);
