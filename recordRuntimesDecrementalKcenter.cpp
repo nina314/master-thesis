@@ -20,8 +20,8 @@ int main(int argc, char *argv[]) {
     double eps = stod(argv[3]);
     string name = argv[4];
 
-    ofstream runtimes("results/" + name + "-staticKcenterRuntimes.txt");
-    ofstream costs("results/" + name + "-staticKcenterCosts.txt");
+    ofstream runtimes("results/" + name + "-decrementalKcenterRuntimes.txt");
+    ofstream costs("results/" + name + "-decrementalKcenterCosts.txt");
 
     runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic" << endl;
     costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic" << endl;
@@ -37,27 +37,51 @@ int main(int argc, char *argv[]) {
     for (auto [s, d] : edgesToRemove) {
         graph[s].erase({d, 1});
         graph[d].erase({s, 1});
+    }
+    
+    for (auto [s, d] : edgesToRemove) {
+        graph[s].insert({d, 1});
+        graph[d].insert({s, 1});
 
-        auto [runtime1, centers1] = getDuration(distanceRIndependent, graph, k, maxWeight);
+        auto start = high_resolution_clock::now();
+        auto centers1 = distanceRIndependent(graph, k, maxWeight);
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        auto runtime1 = duration.count();
         auto cost1 = cost(graph, centers1);
-
-        auto [runtime2, centers2] = getDuration(gonzalezAlpha, graph, k, alpha, maxWeight);
+        
+        start = high_resolution_clock::now();
+        auto centers2 = gonzalezAlpha(graph, k, alpha, maxWeight);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        auto runtime2 = duration.count();
         auto cost2 = cost(graph, centers2);
-
-        auto [runtime3, centers3] = getDuration(baselineGreedy, graph, k, maxWeight);
+        
+        start = high_resolution_clock::now();
+        auto centers3 = baselineGreedy(graph, k, maxWeight);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        auto runtime3 = duration.count();
         auto cost3 = cost(graph, centers3);
-
-        auto [runtime4, centers4] = getDuration(bottleneck, graph, k, maxWeight);
+        
+        start = high_resolution_clock::now();
+        auto centers4 = bottleneck(graph, k, maxWeight);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        auto runtime4 = duration.count();
         auto cost4 = cost(graph, centers4);
-
-        auto [runtime5, centers5] = getDuration(randomCenters, graph, k);
+        
+        start = high_resolution_clock::now();
+        auto centers5 = da.deleteEdge(s, d);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        auto runtime5 = duration.count();
         auto cost5 = cost(graph, centers5);
 
-        auto [runtime6, centers6] = getDurationObject(&DecrementalAlgo::deleteEdge, da, s, d);
-        auto cost6 = cost(graph, centers6);
-
-        costs << cost1 << " " << cost2 << " " << cost3 << " " << cost4 << " " << cost5 << " " << cost6 << endl;
-        runtimes << runtime1 << " " << runtime2 << " " << runtime3 << " " << runtime4 << " " << runtime5 << " " << runtime6 << endl;
+        costs << cost1 << " " << cost2 << " " << cost3 << " " << cost4 << " " << cost5 << endl;
+        
+        runtimes << runtime1 << " " << runtime2 << " " << runtime3 << " " << runtime4 << " " << runtime5 << endl;
+        
     }
     return 0;
 }

@@ -16,7 +16,7 @@ using namespace std;
 class IncrementalAlgo {
 public:
     IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int eps);
-    void insertEdge(int u, int v);
+    void insertEdge(int u, int v, int w);
     FastMIS B;
     bool kBoundedRulingSet(int u, int v);
     vector<int> getCenters();

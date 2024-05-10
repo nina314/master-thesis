@@ -28,8 +28,6 @@ IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHas
         H.resize(n);
 
     } while (!kBoundedRulingSet(0, 0));
-
-    cout << r2 << endl;
 }
 
 unordered_set<int> IncrementalAlgo::sampleVertices(const unordered_set<int>& L_prev, double probability)
@@ -151,14 +149,14 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
     return B.mis.size() < k;
 }
 
-void IncrementalAlgo::insertEdge(int u, int v)
+void IncrementalAlgo::insertEdge(int u, int v, int w)
 {
-    graph[u].insert({v, 1});
-    graph[v].insert({u, 1});
+    graph[u].insert({v, w});
+    graph[v].insert({u, w});
 
     if (Abig[i].distance.size() > 0)
     {
-        Abig[i].addEdge(u, v, 1);
+        Abig[i].addEdge(u, v, w);
 
         auto dists = Abig[i].distance;
 
