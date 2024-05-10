@@ -41,7 +41,7 @@ bool DecrementalAlgo::tryInitialize(int r, int r2)
             return false;
         }
 
-        while(s<originalGraph.size() && distances[s] <= r) s++;
+        while(s<distances.size() && distances[s] <= r) s++;
     }
     
     int source = M[0];
@@ -55,7 +55,7 @@ bool DecrementalAlgo::tryDeleteEdge(int s, int d)
 {
     es.deleteEdge(s, d);
     vector<int> distances = es.getDistances();
-    bool needsRestarting;
+    bool needsRestarting = false;
     
     for(int i=0; i<distances.size(); i++)
     {
@@ -70,8 +70,14 @@ bool DecrementalAlgo::tryDeleteEdge(int s, int d)
         }
     }
     
-    if(needsRestarting)
+    if(M.size()==0) 
+    {
+        M.push_back(0);
+    }
+    
+    else if(needsRestarting)
         es = EStree(connectedGraph, M[0]);
+    
     
     return true;
 }

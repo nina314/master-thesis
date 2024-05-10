@@ -69,6 +69,7 @@ void getWhole(string name)
     vector<unordered_set<pair<int, int>, PHash, PCompare>> adj;
 
     string a, b, c = "1";
+    vector<pair<int, pair<int, int>>> ques;
 
     while (original >> a >> b)
     {
@@ -79,7 +80,10 @@ void getWhole(string name)
             adj.resize(max(a1, b1) + 1);
         }
 
-        queries << a1 << " " << b1 << " " << c1 << endl;
+//        queries << a1 << " " << b1 << " " << c1 << endl;
+        
+        ques.push_back({a1, {b1, c1}});
+        
         adj[a1].insert({b1, c1});
         adj[b1].insert({a1, c1});
     }
@@ -99,6 +103,14 @@ void getWhole(string name)
     makeConnected(adj);
     auto spanningTree = kruskal_mst(adj);
     
+    for(auto [a, p]: ques)
+    {
+        auto [b, w] = p;
+        
+        if(adj[a].count({b, w})) continue;
+        queries << a << " " << b << " " << w << endl;
+    }
+    
      for (int i = 0; i < spanningTree.size(); i++)
      {
          for (auto [nei, wei] : spanningTree[i])
@@ -116,7 +128,8 @@ int main()
         
         if (entry.is_regular_file() && entry.path().extension() == ".txt") {
             string filename = entry.path().stem().string();
-            getWhole(filename); //edit-enwikibooks
+            if(filename!= "edit-enwikibooks")
+                getWhole(filename); 
         }
     }
 

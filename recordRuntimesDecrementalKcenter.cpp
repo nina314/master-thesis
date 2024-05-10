@@ -34,6 +34,8 @@ int main(int argc, char *argv[]) {
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
+        if(graph.size()<=s || graph.size()<=d) continue;
+        
         graph[s].insert({d, w});
         graph[d].insert({s, w});
     }
@@ -44,6 +46,8 @@ int main(int argc, char *argv[]) {
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
+        
+        if(graph.size()<=s || graph.size()<=d) continue;
         
         graph[s].erase({d, w});
         graph[d].erase({s, w});

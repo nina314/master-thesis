@@ -37,6 +37,8 @@ int main(int argc, char *argv[]) {
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
+        if(graph.size()<=s || graph.size()<=d) continue;
+        
         graph[s].insert({d, w});
         graph[d].insert({s, w});
         
@@ -77,10 +79,6 @@ int main(int argc, char *argv[]) {
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         auto runtime5 = duration.count();
-        auto cents = ia.getCenters();
-        
-        for(auto c: cents) cout<<c<<" ";
-        cout<<endl;
         auto cost5 = cost(graph, ia.getCenters());
         cout<<"5 "<<cost5<<endl;
 

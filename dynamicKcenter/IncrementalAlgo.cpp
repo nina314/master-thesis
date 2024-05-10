@@ -15,7 +15,6 @@ IncrementalAlgo::IncrementalAlgo(const vector<unordered_set<pair<int, int>, PHas
     {
         i = 0;
         r2 = (1 + eps) * r2;
-        cout << r2 << endl;
 
         initialized = false;
         L.clear();
