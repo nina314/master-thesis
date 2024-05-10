@@ -61,7 +61,7 @@ double getDurationObjectVoid(Func func, Object obj, Args&&... args)
 }
 
 template<typename Func, typename Object, typename... Args>
-pair<double, vector<int>> getDurationObject(Func func, Object obj, Args&&... args)  // decltype(declval<Func>()(declval<Args>()...)
+pair<double, vector<int>> getDurationObject(Func func, Object obj, Args&&... args)
 {
     auto start = std::chrono::high_resolution_clock::now();
     auto result = (obj.*func)(std::forward<Args>(args)...);

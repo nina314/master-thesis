@@ -56,8 +56,6 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
             auto si = sampleVertices(L[i - 1], probability);
 
             S_i.insert(si.begin(), si.end());
-//            cout<<i<<endl;
-//            for(auto s_i: S_i) cout<<s_i<<" ";
 
             vector<int> centers;
             for (auto c : S_i)
@@ -102,22 +100,6 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
                 }
             }
 
-//            cout<<"H \n";
-//            for(int i=0; i<H.size(); i++)
-//            {
-//                cout<<i<<endl;
-//                for(auto e: H[i]) cout<<e.first<<" ";
-//                cout<<endl;
-//            }
-//            cout<<endl;
-//            cout<<"S \n";
-//            for(auto mm: S_union) cout<<mm<<" ";
-//            cout<<endl;
-//            
-//                        cout<<"MIS \n";
-//            for(auto mm: B.mis) cout<<mm<<" ";
-//            cout<<endl;
-//            
             B = FastMIS(H, S_union);
             initialized = true;
 
@@ -125,7 +107,6 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
         }
         else
         {
-//        cout<<" not here";
             for (auto s : S_union)
             {
                 Asmall[s].addEdge(u, v, 1);
@@ -137,7 +118,7 @@ bool IncrementalAlgo::kBoundedRulingSet(int u, int v)
                     {
                         H[s].insert({s2, dists[s2]});
                         H[s2].insert({s, dists[s2]});
-//                        cout<<s<<" "<<s2<<endl;
+                        
                         if(s!=s2)
                             B.update(s, s2);
                     }
@@ -185,37 +166,3 @@ vector<int> IncrementalAlgo::getCenters()
         res.push_back(mm);
     return res;
 }
-
-
-
-//int main() {
-//    unsigned seed = 12345;
-//    mt19937 gen(seed);
-//    uniform_int_distribution<int> weight_dist(10, 50);
-//
-//    int n = 61;
-//
-//    vector<unordered_set<pair<int, int>, PHash, PCompare>> adj(n);
-//
-//    for (int i = 0; i < n; ++i) {
-//        for (int j = i + 1; j < n; ++j) {
-//            int weight = weight_dist(gen);
-//            if(weight>10)
-//            {
-//                adj[i].insert({j, weight});
-//                adj[j].insert({i, weight});
-//            }
-//        }
-//    }
-//
-//    int k = 15;
-//    
-//    int eps = 1;
-//    IncrementalAlgo ia(adj, k, eps);
-////    for(auto mm: ia.B.mis) cout<<mm<<" ";
-//    
-//    ia.insertEdge(4, 3);
-////    for(auto mm: ia.B.mis) cout<<mm<<" ";
-//    
-//    return 0;
-//}

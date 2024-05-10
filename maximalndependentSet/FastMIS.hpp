@@ -48,4 +48,4 @@ private:
     vector<set<pair<int, int>, CustomCompare>> convertToSet(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& unorderedSets);
 };
 
-#endif // FAST_MIS_HPP
+#endif

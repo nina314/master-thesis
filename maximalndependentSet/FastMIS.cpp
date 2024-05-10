@@ -54,19 +54,6 @@ set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
     mis = set<int, CustomCompare>(pi); 
     int i=0, f=0;
     
-//              cout<<"nodes \n";
-//            for(auto mm: mis) cout<<"nodes"<<" ";
-//            cout<<endl;
-//    
-//    cout<<"H \n";
-//            for(int i=0; i<G.size(); i++)
-//            {
-//                cout<<i<<endl;
-//                for(auto e: G[i]) cout<<e.first<<" ";
-//                cout<<endl;
-//            }
-//            cout<<endl;
-    
     for (auto v: VV) {
         if (!nodes.empty() && !nodes.count(v)) continue;
         bool dominated = false;
@@ -83,7 +70,6 @@ set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
         if (!dominated) 
         {
             mis.insert(v);
-//            cout<<"insert "<<v<<endl;
         }
         
         
@@ -173,8 +159,6 @@ unordered_set<int> FastMIS::findInfluencedSet(int u, int v, int b) {
 }
 
 void FastMIS::update(int u, int v) {
-//    cout<<pi[v] <<" "<< pi[u]<<endl;
-    
     if (pi[v] < pi[u]) swap(u, v);
     
     
@@ -285,54 +269,4 @@ void FastMIS::printAll()
     cout<<"MIS: \n";
     for(auto m: mis) cout<<m<<" ";
     cout<<endl;
-    
-//        for(int i=0; i<V.size(); i++)
-//        {
-//            cout<<"V["<<i<<"]: \n";
-//            for(auto v: V[i]) cout<<v<<" ";
-//            cout<<endl;
-//        }
 }
-
-//int main() {
-//    
-//    vector<int> order = {1, 4, 2, 0, 3, 5};
-//    
-//    vector<set<pair<int, int>, CustomCompare>> graph(order.size(), set<pair<int, int>, CustomCompare>(CustomCompare(order)));
-//
-//    graph[0] = {{2, 1}};
-//    graph[1] = {{5, 1}, {3, 1}};
-//    graph[2] = {{0, 1}, {2, 1}};
-//    graph[3] = {{2, 1}, {1, 1}};
-//    graph[4] = {};
-//    graph[5] = {{1, 1}};
-//    
-//    FastMIS fastMIS(graph, order);
-//    fastMIS.printAll();
-//    
-//    cout<<"upd1 \n";
-//    fastMIS.update(3, 4);
-//    fastMIS.printAll();
-//    
-//    cout<<"upd2 \n";
-//    fastMIS.update(1, 4);
-//    fastMIS.printAll();
-//    
-//    cout<<"upd3 \n";
-//    fastMIS.update(5, 4);
-//    fastMIS.printAll();
-//        
-//    cout<<"upd4 \n";
-//    fastMIS.update(2, 5);
-//    fastMIS.printAll();
-//    
-//    cout<<"upd5 \n";
-//    fastMIS.update(3, 5);
-//    fastMIS.printAll();
-//    
-//    cout<<"upd6 \n";
-//    fastMIS.update(0, 5);
-//    fastMIS.printAll();
-//    
-//    return 0;
-//}

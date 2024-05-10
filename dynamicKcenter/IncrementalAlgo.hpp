@@ -39,4 +39,4 @@ private:
     unordered_set<int> sampleVertices(const unordered_set<int>& L_prev, double probability);
 };
 
-#endif // INCREMENTAL_ALGO_HPP
+#endif 
