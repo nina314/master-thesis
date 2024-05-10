@@ -20,8 +20,8 @@ int main(int argc, char *argv[]) {
     double eps = stod(argv[3]);
     string name = argv[4]; // //edit-enwikibooks, fb-messages, ia-contacts_hypertext2009, ia-digg-reply
 
-    ofstream runtimes("results/" + name + "-staticKcenterRuntimes.txt");
-    ofstream costs("results/" + name + "-staticKcenterCosts.txt");
+    ofstream runtimes("results/" + name + "-incrementalKcenterRuntimes.txt");
+    ofstream costs("results/" + name + "-incrementalKcenterCosts.txt");
 
     runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Random Dynamic" << endl;
     costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Random Dynamic" << endl;
