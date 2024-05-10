@@ -6,43 +6,11 @@
 #include <iostream>
 #include <random>
 #include <queue>
+#include <filesystem>
+
 
 using namespace std;
-
-void makeFiles(vector<unordered_set<pair<int, int>, PHash, PCompare>>& spanningTree, string name, int n)
-{
-    ofstream queries("testingData/cleanedFiles/"+name+"-Queries.txt");
-    ofstream edges("testingData/cleanedFiles/"+name+"-Edges.txt");
-    
-    random_device rd;
-    mt19937 gen(rd()); 
-
-    uniform_int_distribution<> dist(0, spanningTree.size()-1); 
-
-    for(int i=0; i<n; i++)
-    {
-        int random1 = dist(gen);
-        int random2 = dist(gen);
-        
-        while(spanningTree[random1].find({random2, 1}) != spanningTree[random1].end() || random1==random2)
-        {
-            random1 = dist(gen);
-            random2 = dist(gen);
-        }
-        spanningTree[random1].insert({random2, 1});
-        spanningTree[random2].insert({random1, 1});
-        queries<< random1<<" "<< random2<<endl;
-    }
-    
-    for(int i=0; i<spanningTree.size(); i++)
-    {
-        for(auto [nei, wei]: spanningTree[i])
-        {
-            edges<< i<<" "<< nei<< " "<<wei<<endl;
-            
-        }
-    }
-}
+namespace fs = filesystem;
 
 void bfs(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<bool>& visited) {
     queue<int> q;
@@ -92,23 +60,64 @@ vector<unordered_set<pair<int, int>, PHash, PCompare>> makeSequential(int nodes)
     return graph;
 }
 
-int main()
+void getWhole(string name)
 {
-//    auto spanningTree = makeSequential(50);
-    
-    auto adj = getGraph("testingData/originalFiles/email-Eu-core.txt", 10);
-    makeConnected(adj);
-    
-    int n=0;
-    auto spanningTree = kruskal_mst(adj);
-    
-    for(int i=0; i<spanningTree.size(); i++)
+    ifstream original("testingData/originalFiles/" + name + ".txt");
+    ofstream queries("testingData/cleanedFiles/" + name + "-Queries.txt");
+    ofstream edges("testingData/cleanedFiles/" + name + "-Edges.txt");
+
+    vector<unordered_set<pair<int, int>, PHash, PCompare>> adj;
+
+    string a, b, c = "1";
+
+    while (original >> a >> b)
     {
-        for(auto [nei, wei]: spanningTree[i])
+        int a1 = stoi(a), b1 = stoi(b), c1 = stoi(c);
+
+        if (adj.size() <= max(a1, b1))
         {
-            n++;
+            adj.resize(max(a1, b1) + 1);
+        }
+
+        queries << a1 << " " << b1 << " " << c1 << endl;
+        adj[a1].insert({b1, c1});
+        adj[b1].insert({a1, c1});
+    }
+    
+    for (auto it = adj.begin(); it != adj.end();)
+    {
+        if (it->empty())
+        {
+            it = adj.erase(it);
+        }
+        else
+        {
+            ++it;
         }
     }
-       
-    makeFiles(spanningTree, "email-Eu-core-shortened", 30);
+
+    makeConnected(adj);
+    auto spanningTree = kruskal_mst(adj);
+    
+     for (int i = 0; i < spanningTree.size(); i++)
+     {
+         for (auto [nei, wei] : spanningTree[i])
+         {
+             edges << i << " " << nei << " " << wei << endl;
+         }
+     }
+}
+
+int main()
+{
+    string directory_path = "testingData/originalFiles/";
+
+    for (const auto& entry : fs::directory_iterator(directory_path)) {
+        
+        if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+            string filename = entry.path().stem().string();
+            getWhole(filename); //edit-enwikibooks
+        }
+    }
+
 }
