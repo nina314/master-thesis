@@ -9,7 +9,7 @@
 
 using namespace std;
 
-vector<int> maximalDistanceRIndependentSet(vector<unordered_set<pair<int, int>, PHash>>& graph, int r) {
+vector<int> maximalDistanceRIndependentSet(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int r) {
     int n = graph.size();
     vector<int> independentSet;
     unordered_set<int> candidateSet;
@@ -32,7 +32,7 @@ vector<int> maximalDistanceRIndependentSet(vector<unordered_set<pair<int, int>, 
     return independentSet;
 }
 
-vector<int> distanceRIndependent(vector<unordered_set<pair<int, int>, PHash>>& graph, int k, int maxWeight) {
+vector<int> distanceRIndependent(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int k, int maxWeight) {
     int lo = 0, hi = maxWeight*graph.size();
     vector<int> independentSet, res;
         
