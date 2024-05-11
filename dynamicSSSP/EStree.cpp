@@ -36,7 +36,8 @@ EStree::EStree(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int
         {
             if(distances[nei] == distances[current])
             {
-                beta[nei].insert(current);
+                if(nei!=current)
+                    beta[nei].insert(current);
             }
             else if(distances[nei]-1> distances[current])
             {
@@ -97,7 +98,6 @@ void EStree::deleteEdge(int s, int d, int maxDepth)
         }
         
         alpha[w] = beta[w];
-
         for(auto nei: gamma[w])
         {
             alpha[nei].erase(w);
@@ -108,10 +108,9 @@ void EStree::deleteEdge(int s, int d, int maxDepth)
                 q.push(nei);
             }
         }
-
         beta[w] = gamma[w];
+        beta[w].erase(w);
         gamma[w].clear();
-        
         if(distances[w]>maxDepth)
         {
             alpha[w].clear();
@@ -122,6 +121,8 @@ void EStree::deleteEdge(int s, int d, int maxDepth)
         {
             q.push(w);
         }
+        gamma[w].erase(w);
+        alpha[w].erase(w);
         
     }
 }
