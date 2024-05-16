@@ -82,12 +82,12 @@ int main(int argc, char *argv[]) {
         cout<<"4 "<<cost4<<endl;
         
         start = high_resolution_clock::now();
-        ia.insertEdge(s, d, w);
+//        ia.insertEdge(s, d, w);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         auto runtime5 = duration.count();
-        auto cost5 = cost(graph, ia.getCenters());
-//        auto cost5=0;
+//        auto cost5 = cost(graph, ia.getCenters());
+        auto cost5=0;
         cout<<"5 "<<cost5<<endl;
         
         start = high_resolution_clock::now();
