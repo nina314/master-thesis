@@ -3,6 +3,7 @@
 #include "staticKcenter/randomCenters.hpp"
 #include "staticKcenter/baselineGreedy.hpp"
 #include "staticKcenter/bottleneck.hpp"
+#include "dynamicKcenter/FullyDynamicAlgo.hpp"
 #include "dynamicKcenter/DecrementalAlgo.hpp"
 #include "utils/common.hpp"
 #include <iostream>
@@ -42,7 +43,8 @@ int main(int argc, char *argv[]) {
     
     auto da = DecrementalAlgo(graph, eps, k);
     da.initialize();
-
+    
+    FullyDynamicAlgo fd(graph, k);
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
@@ -86,10 +88,18 @@ int main(int argc, char *argv[]) {
         duration = duration_cast<microseconds>(stop - start);
         auto runtime5 = duration.count();
         auto cost5 = cost(graph, centers5);
-
-        costs << cost1 << " " << cost2 << " " << cost3 << " " << cost4 << " " << cost5 << endl;
         
-        runtimes << runtime1 << " " << runtime2 << " " << runtime3 << " " << runtime4 << " " << runtime5 << endl;
+        start = high_resolution_clock::now();
+        fd.addEdge(s, d);
+        auto centers6 = fd.getCenters();
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        auto runtime6 = duration.count();
+        auto cost6 = cost(graph, centers6);
+
+        costs << cost1 << " " << cost2 << " " << cost3 << " " << cost4 << " " << cost5 <<" "<<cost6 <<endl;
+        
+        runtimes << runtime1 << " " << runtime2 << " " << runtime3 << " " << runtime4 << " " << runtime5<< " "<<runtime6 << endl;
         
     }
     return 0;

@@ -1,6 +1,7 @@
 #include "dynamicSSSP/EStree.hpp"
 #include "dynamicSSSP/DecrementalDynamicSSSP.hpp"
 #include "dynamicSSSP/IncrementalDynamicSSSP.hpp"
+#include "dynamicSSSP/ScaledEStree.hpp"
 #include "utils/common.hpp"
 #include <fstream>
 #include <iostream>
@@ -25,18 +26,13 @@ int main(int argc, char *argv[]) {
     runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource" << endl;
 
     auto adj = getGraph("testingData/cleanedFiles/" + name + "-Edges.txt");
-    auto edgesToRemove = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
-
-    for (auto [s, d] : edgesToRemove) {
-        adj[s].erase({d, 1});
-        adj[d].erase({s, 1});
-    }
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
     
     auto start = high_resolution_clock::now();
     EStree es(adj, source);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-
+    
     start = high_resolution_clock::now();
     IncrementalDynamicSSSP dynamic(k, eps, adj, m, D);
     stop = high_resolution_clock::now();
@@ -53,12 +49,18 @@ int main(int argc, char *argv[]) {
     stop = high_resolution_clock::now();
     auto duration3 = duration_cast<microseconds>(stop - start);
     
-    runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<< endl;
+    start = high_resolution_clock::now();
+    ScaledEStree scaledES(source, adj);
+    stop = high_resolution_clock::now();
+    auto duration4 = duration_cast<microseconds>(stop - start);
+    
+    runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<<" "<< duration4.count()<<endl;
 
-    for (auto [s, d] : edgesToRemove) {
+    for (auto [s, p] : edgesToAdd) {
+        auto [d, w] = p;
         
-        adj[s].insert({d, 1});
-        adj[d].insert({s, 1});
+        adj[s].insert({d, w});
+        adj[d].insert({s, w});
         
         start = high_resolution_clock::now();
         es.addEdge(s, d);
@@ -75,12 +77,17 @@ int main(int argc, char *argv[]) {
         Dijkstra(adj, source, dists);
         stop = high_resolution_clock::now();
         duration2 = duration_cast<microseconds>(stop - start);
-
+        
         start = high_resolution_clock::now();
         dSource.addEdge(s, d, 1);
         stop = high_resolution_clock::now();
         duration3 = duration_cast<microseconds>(stop - start);
-
-        runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<< endl;
+        start = high_resolution_clock::now();
+        
+        scaledES.addEdge(s, d, 1);
+        stop = high_resolution_clock::now();
+        duration4 = duration_cast<microseconds>(stop - start);
+        
+        runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<<" "<< duration4.count()<<endl;
     }
 }

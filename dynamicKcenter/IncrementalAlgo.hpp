@@ -3,7 +3,7 @@
 
 #include "../utils/common.hpp"
 #include "../maximalndependentSet/FastMIS.hpp"
-#include "../dynamicSSSP/Dsource.hpp"
+#include "../dynamicSSSP/ScaledEStree.hpp"
 #include <iostream>
 #include <vector>
 #include <unordered_set>
@@ -23,12 +23,12 @@ public:
     
 private:
     int i;
-    vector<unordered_set<int>> L;
+    unordered_set<int> prevL, curL;
     vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
     int k, n;
     int r, r2;
-    vector<Dsource> Abig;
-    vector<Dsource> Asmall;
+    vector<ScaledEStree> Abig;
+    vector<ScaledEStree> Asmall;
     bool initialized;
     unordered_set<int> S_i, S_union;
     unordered_set<int> V;
