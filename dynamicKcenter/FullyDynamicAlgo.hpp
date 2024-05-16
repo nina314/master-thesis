@@ -24,11 +24,9 @@ class FullyDynamicAlgo
         
         for(int i=0; i<k; i++)
         {
-//            cout<<i<<endl;
             auto dists= D.getDistances();
             auto maxi = max_element(dists.begin(), dists.end());
             int c_next = distance(dists.begin(), maxi); 
-            cout<<"cNEXY"<<c_next<<endl;
             
             D.addEdge(s, c_next, 0);
             C.insert(c_next);
@@ -40,7 +38,6 @@ class FullyDynamicAlgo
 //            cout<<c<<endl;
 //            D.deleteEdge(s, c);
 //        }
-//        cout<<"X"<<endl;
         return C;
     }
     

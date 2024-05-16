@@ -14,7 +14,7 @@ namespace fs = filesystem;
 ofstream edges; // Declare edges globally
 
 void bfs(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<bool>& visited) {
-    vector<int> path; // Path to store the traversal sequence
+    vector<int> path;
     queue<int> q;
     q.push(start);
     visited[start] = true;
@@ -22,11 +22,9 @@ void bfs(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int star
     while (!q.empty()) {
         int current = q.front();
         q.pop();
-         // Record the current node in the path
         
         if (path.size() > 0 && path[path.size() - 1]!=current)
         {
-//            cout<<"ADD "<< path[path.size() - 1] << " " << current<<endl;
             edges << path[path.size() - 1] << " " << current << " " << 1 << endl;
         }
         path.push_back(current);
@@ -67,9 +65,9 @@ vector<unordered_set<pair<int, int>, PHash, PCompare>> makeSequential(int nodes)
 }
 
 void getWhole(string name) {
-    ifstream original("testingData/originalFiles/" + name + ".txt");
-    ofstream queries("testingData/cleanedFiles/" + name + "-Queries.txt");
-    edges.open("testingData/cleanedFiles/" + name + "-Edges.txt");
+    ifstream original("testingData/originalFiles/short/" + name + ".txt");
+    ofstream queries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    edges.open("testingData/cleanedFiles/short/" + name + "-Edges.txt");
 
     vector<unordered_set<pair<int, int>, PHash, PCompare>> adj;
 
@@ -105,9 +103,9 @@ void getWhole(string name) {
 }
 
 void getWholePlain(string name) {
-    ifstream original("testingData/originalFiles/" + name + ".txt");
-    ofstream queries("testingData/cleanedFiles/" + name + "-Queries.txt");
-    edges.open("testingData/cleanedFiles/" + name + "-Edges.txt", std::ios_base::app);
+    ifstream original("testingData/originalFiles/short/" + name + ".txt");
+    ofstream queries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    edges.open("testingData/cleanedFiles/short/" + name + "-Edges.txt", std::ios_base::app);
 
 
     vector<unordered_set<pair<int, int>, PHash, PCompare>> adj;
@@ -145,7 +143,7 @@ void getWholePlain(string name) {
 
 int main()
 {
-    string directory_path = "testingData/originalFiles/";
+    string directory_path = "testingData/originalFiles/short/";
 
     for (const auto& entry : fs::directory_iterator(directory_path)) {
         
