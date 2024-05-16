@@ -21,39 +21,53 @@ int main(int argc, char *argv[]) {
     int eps = stoi(argv[4]); 
     int m = 10;
 
-    ofstream runtimesDec("results/" + name + "-decrementalDynamicSSSPRuntimes.txt");
+    ofstream runtimesDec("results/short/DecrementalSSSP/" + name + "-decrementalDynamicSSSPRuntimes.txt");
     
     runtimesDec << "EStree DecrementalDynamicSSSP Dijkstra ScaledEStree" << endl;
 
-    auto adj = getGraph("testingData/cleanedFiles/" + name + "-Edges.txt");
-    auto edgesToRemove = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
+    auto graph = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
 
+    for (auto [s, p] : edgesToAdd) {
+        auto [d, w] = p;
+        
+        if(graph.size()<=s || graph.size()<=d) continue;
+        
+        graph[s].insert({d, w});
+        graph[d].insert({s, w});
+    }
+    
+    
     auto start = high_resolution_clock::now();
-    EStree es(adj, source);
+    EStree es(graph, source);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
 
     start = high_resolution_clock::now();
-    DecrementalDynamicSSSP dynamic(adj, D, eps, source);
+    DecrementalDynamicSSSP dynamic(graph, D, eps, source);
     stop = high_resolution_clock::now();
     auto duration1 = duration_cast<microseconds>(stop - start);
     
-    vector<int> dists(adj.size(), INF);
+    vector<int> dists(graph.size(), INF);
     start = high_resolution_clock::now();
-    Dijkstra(adj, source, dists);
+    Dijkstra(graph, source, dists);
     stop = high_resolution_clock::now();
     auto duration2 = duration_cast<microseconds>(stop - start);
     
     start = high_resolution_clock::now();
-    ScaledEStree scaledES(source, adj);
+    ScaledEStree scaledES(source, graph);
     stop = high_resolution_clock::now();
     auto duration3 = duration_cast<microseconds>(stop - start);
     
     runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<< endl;
 
-    for (auto [s, d] : edgesToRemove) {
-        adj[s].erase({d, 1});
-        adj[d].erase({s, 1});
+    for (auto [s, p] : edgesToAdd) {
+        auto [d, w] = p;
+        
+        if(graph.size()<=s || graph.size()<=d) continue;
+        
+        graph[s].erase({d, w});
+        graph[d].erase({s, w});
         
         start = high_resolution_clock::now();
         es.deleteEdge(s, d, INF/2);
@@ -67,8 +81,8 @@ int main(int argc, char *argv[]) {
         duration1 = duration_cast<microseconds>(stop - start);
         
         start = high_resolution_clock::now();
-        dists = vector<int>(adj.size(), INF);
-        Dijkstra(adj, source, dists);
+        dists = vector<int>(graph.size(), INF);
+        Dijkstra(graph, source, dists);
         stop = high_resolution_clock::now();
         duration2 = duration_cast<microseconds>(stop - start);
 

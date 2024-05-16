@@ -21,16 +21,16 @@ int main(int argc, char *argv[]) {
     double eps = stod(argv[3]);
     string name = argv[4];
 
-    ofstream runtimes("results/" + name + "-decrementalKcenterRuntimes.txt");
-    ofstream costs("results/" + name + "-decrementalKcenterCosts.txt");
+    ofstream runtimes("results/short/DecrementalKcenter/" + name + "-decrementalKcenterRuntimes.txt");
+    ofstream costs("results/short/DecrementalKcenter/" + name + "-decrementalKcenterCosts.txt");
 
-    runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic" << endl;
-    costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic" << endl;
+    runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
+    costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
 
     int maxWeight = 1;
 
-    auto graph = getGraph("testingData/cleanedFiles/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
+    auto graph = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     da.initialize();
     
     FullyDynamicAlgo fd(graph, k);
-
+//
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
         auto cost5 = cost(graph, centers5);
         
         start = high_resolution_clock::now();
-        fd.addEdge(s, d);
+        fd.deleteEdge(s, d);
         auto centers6 = fd.getCenters();
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);

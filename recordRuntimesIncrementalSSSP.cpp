@@ -22,12 +22,13 @@ int main(int argc, char *argv[]) {
     int eps = stoi(argv[4]);
     int m = 10, k = 3;
 
-    ofstream runtimesInc("results/" + name + "-incrementalDynamicSSSPRuntimes.txt");
-    runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource" << endl;
+    ofstream runtimesInc("results/short/IncrementalSSSP/" + name + "-incrementalDynamicSSSPRuntimes.txt");
+    runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource ScaledEStree" << endl;
 
-    auto adj = getGraph("testingData/cleanedFiles/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/" + name + "-Queries.txt");
-    
+    auto adj = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    cout<<"testingData/cleanedFiles/short/" + name + "-Edges.txt"<<endl;
+
     auto start = high_resolution_clock::now();
     EStree es(adj, source);
     auto stop = high_resolution_clock::now();

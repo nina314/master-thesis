@@ -1,4 +1,4 @@
-#include "../dynamicSSSP/ScaledEStree.hpp"
+#include "../dynamicSSSP/EStree.hpp"
 #include "../utils/common.hpp"
 #include <unordered_set>
 #include <vector>
@@ -6,7 +6,7 @@
 class FullyDynamicAlgo
 {
     public:
-    ScaledEStree D;
+    EStree D;
     int s;
     unordered_set<int> centers;
     int k;
@@ -28,7 +28,7 @@ class FullyDynamicAlgo
             auto maxi = max_element(dists.begin(), dists.end());
             int c_next = distance(dists.begin(), maxi); 
             
-            D.addEdge(s, c_next, 0);
+            D.addEdge(s, c_next);
             C.insert(c_next);
         }
         
@@ -46,13 +46,13 @@ class FullyDynamicAlgo
         s= graph.size();
         graph.push_back({});
         
-        D = ScaledEStree(s, graph);
+        D = EStree(graph, s);
         centers = simulateGonzales();
     }
     
     void addEdge(int u, int v, int w)
     {
-        D.addEdge(u, v, w);
+        D.addEdge(u, v);
         centers = simulateGonzales(); 
     }
     
