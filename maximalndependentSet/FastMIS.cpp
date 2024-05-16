@@ -170,8 +170,8 @@ void FastMIS::update(int u, int v) {
     int b = floor(log2(pi[v]));
     
     auto S = findInfluencedSet(u, v, b);
-        
-    if (S.empty()) {
+    
+    if (S.empty()) {    
         int index = -1;
 
         for (auto [wnei, wwei] : G[v]) {
@@ -183,16 +183,19 @@ void FastMIS::update(int u, int v) {
 
         if (index != -1) {
             int doo = floor(log2(index));
-            for (int i = a; i <= doo; i++) {
+            doo = min(doo, (int)V.size()-1);
+            for (int i = max(0, a); i < doo; i++) {
                 V[i].insert(v);
             }
-        } else {
-            for (int i = a; i < V.size(); i++) { 
+        } 
+        else {
+            for (int i = max(0, a); i < V.size(); i++) { 
                 V[i].insert(v);
             }
         }
         
-    } else {
+    } 
+    else {
         for (int i = a + 1; i < V.size(); i++) 
             V[i].erase(v);
 
