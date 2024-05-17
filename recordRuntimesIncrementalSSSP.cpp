@@ -27,7 +27,6 @@ int main(int argc, char *argv[]) {
 
     auto adj = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
     auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
-    cout<<"testingData/cleanedFiles/short/" + name + "-Edges.txt"<<endl;
 
     auto start = high_resolution_clock::now();
     EStree es(adj, source);

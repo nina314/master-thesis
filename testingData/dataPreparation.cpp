@@ -12,6 +12,7 @@ using namespace std;
 namespace fs = filesystem;
 
 ofstream edges; // Declare edges globally
+vector<unordered_set<int>> spanning_tree;
 
 void bfs(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int start, vector<bool>& visited) {
     vector<int> path;
@@ -26,6 +27,8 @@ void bfs(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, int star
         if (path.size() > 0 && path[path.size() - 1]!=current)
         {
             edges << path[path.size() - 1] << " " << current << " " << 1 << endl;
+            spanning_tree[path[path.size() - 1]].insert(current);
+            spanning_tree[current].insert(path[path.size() - 1]);
         }
         path.push_back(current);
         for (auto neighbor : graph[current]) {
@@ -46,6 +49,8 @@ void makeConnected(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph
         if (i != 0) {
             graph[i - 1].insert({i, 1});
             graph[i].insert({i - 1, 1});
+            spanning_tree[i].insert(i-1);
+            spanning_tree[i-1].insert(i);
             edges << i << " " << i - 1 << " " << 1 << endl;
         }
 
@@ -82,23 +87,23 @@ void getWhole(string name) {
         }
         
         if(a1!=b1)
-            queries << a1 << " " << b1 << " " << c1 << endl;
-
-        ques.push_back({a1, {b1, c1}});
+            ques.push_back({a1, {b1, c1}});
 
         adj[a1].insert({b1, c1});
         adj[b1].insert({a1, c1});
     }
-
-    for (auto it = adj.begin(); it != adj.end();) {
-        if (it->empty()) {
-            it = adj.erase(it);
-        } else {
-            ++it;
-        }
-    }
+    
+    spanning_tree.resize(adj.size());
 
     makeConnected(adj);
+    
+    for(auto [a, p]: ques)
+    {
+        auto [b, w] = p;
+        if(!spanning_tree[a].count(b))
+            queries << a << " " << b << " " << w << endl;
+    }
+    
     edges.close();
 }
 

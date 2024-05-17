@@ -1,4 +1,4 @@
-#include "ScaledEStree.hpp"
+#include "FullyDynamicScaledEStree.hpp"
 #include "EStree.hpp"
 #include "../utils/common.hpp"
 #include <queue>
@@ -7,9 +7,9 @@
 #include <vector>
 #include <unordered_set>
 
-ScaledEStree::ScaledEStree(){}
+FullyDynamicScaledEStree::FullyDynamicScaledEStree(){}
 
-ScaledEStree::ScaledEStree(int s, vector<unordered_set<pair<int, int>, PHash, PCompare>> graph_or)
+FullyDynamicScaledEStree::FullyDynamicScaledEStree(int s, vector<unordered_set<pair<int, int>, PHash, PCompare>> graph_or)
 {
     graph = graph_or;
     graph.push_back({{s, 0}});
@@ -27,22 +27,18 @@ ScaledEStree::ScaledEStree(int s, vector<unordered_set<pair<int, int>, PHash, PC
     {
         for(auto& edge: graph[i])
         {
-            N[i].push({edge.second + l[edge.first], edge.first}); 
+            N[i][edge.first] = edge.second + l[edge.first]; 
         }
     }
 }
 
-void ScaledEStree::deleteEdge(int u, int v)
+void FullyDynamicScaledEStree::deleteEdge(int u, int v)
 {
     if(l[u]>l[v]) swap(u, v);
-//    increase(u, v, INF/3);
     increase(u, v, INF/3);
-    
-//    graph[u].erase({v, 1});
-//    graph[v].erase({u, 1});
 }
 
-void ScaledEStree::addEdge(int u, int v, int w)
+void FullyDynamicScaledEStree::addEdge(int u, int v, int w)
 {
     if(l[u]>l[v]) swap(u, v);
     
@@ -50,21 +46,26 @@ void ScaledEStree::addEdge(int u, int v, int w)
     graph[v].insert({u, w});
     
     scan2(u, v);
-    N[u].push({l[v]+w, v});
+    N[u][v]=l[v]+w;
 }
 
-void ScaledEStree::scan2(int u, int v)
+void FullyDynamicScaledEStree::scan2(int u, int v)
 {
     int w=INF/3;
 
     if(graph[u].find({v, 1})!=graph[u].end())
         w = (graph[u].find({v, 1}))->second;
     
-    N[v].push({l[u]+w, u});
+    N[v][u] = l[u]+w;
     
+    //OVDJE!!
+    vector<pair<int, int>> temp;
     
-    if(N[v].top().first==-1) return;
-    auto v2 = N[v].top().second;
+    for(auto [fi, se]: N[v]) temp.push_back({se, fi});
+    sort(temp.begin(), temp.end());
+    
+    if(temp.empty()) return;
+    auto v2 = temp[0].second;
     
     if(graph[v].find({v2, 1})!=graph[v].end())
         w = (graph[v].find({v2, 1}))->second;
@@ -77,14 +78,14 @@ void ScaledEStree::scan2(int u, int v)
     {
         l[v] = l[v2]+w;
         
-        for(auto [nei, wei]: graph[v])
+        for(auto [wei, nei]: temp)
         {
             scan2(v, nei);
         }
     }
 }
 
-void ScaledEStree::increase(int u, int v, int w)
+void FullyDynamicScaledEStree::increase(int u, int v, int w)
 {
     graph[u].erase({v, 1});
     graph[v].erase({u, 1});
@@ -95,22 +96,27 @@ void ScaledEStree::increase(int u, int v, int w)
     scan(u, v);
 }
 
-void ScaledEStree::scan(int u, int v)
+void FullyDynamicScaledEStree::scan(int u, int v)
 {
     int w=INF/3;
     
     if(graph[u].find({v, 1})!=graph[u].end())
         w = (graph[u].find({v, 1}))->second;
     
-    N[v].changeFirst(l[u]+w, u);
+    N[v][u] = l[u]+w;
     for(auto& edge: graph[v])
     {
-        N[v].changeFirst(edge.second + l[edge.first], edge.first); 
+        N[v][edge.first] =edge.second + l[edge.first]; 
     }
     
-    if(N[v].top().first==-1) return;
-    auto v2 = N[v].top().second;
+    vector<pair<int, int>> temp;
     
+    for(auto [fi, se]: N[v]) temp.push_back({se, fi});
+    sort(temp.begin(), temp.end());
+    
+    if(temp.empty()) return;
+    auto v2 = temp[0].second;
+    // ovjde!!
     if(graph[v2].find({v, 1})!=graph[v2].end())
         w = (graph[v2].find({v, 1}))->second;
     else w = INF/3;
@@ -123,13 +129,8 @@ void ScaledEStree::scan(int u, int v)
     {
         l[v] = l[v2]+w;
         
-        auto t = N[v];
-        
-        
-        while(!t.pq.empty())
+        for(auto [wei, nei]: temp)
         {
-            auto nei = t.top().second;
-            t.pop();
             if(graph[nei].count({v, 1}))
             {
                 scan(v, nei);
@@ -138,7 +139,7 @@ void ScaledEStree::scan(int u, int v)
     }   
 }
 
-vector<int> ScaledEStree::getDistances()
+vector<int> FullyDynamicScaledEStree::getDistances()
 {
     auto ll = l;
     ll.pop_back();

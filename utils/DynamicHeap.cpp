@@ -22,6 +22,8 @@ void DynamicHeap::cleanupQueue()
 void DynamicHeap::pop()
 {
     cleanupQueue();
+    
+    if(pq.empty()) return;
     auto temp = pq.top();
     pq.pop();
     mapa.erase(temp.second);
