@@ -1,6 +1,5 @@
 #include "dynamicSSSP/EStree.hpp"
 #include "dynamicSSSP/ScaledEStree.hpp"
-#include "dynamicSSSP/FullyDynamicScaledEStree.hpp"
 #include "dynamicSSSP/DecrementalDynamicSSSP.hpp"
 #include "utils/common.hpp"
 #include <fstream>
@@ -24,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     ofstream runtimesDec("results/short/DecrementalSSSP/" + name + "-decrementalDynamicSSSPRuntimes.txt");
     
-    runtimesDec << "EStree DecrementalDynamicSSSP Dijkstra ScaledEStree FullyDynamicScaledEStree" << endl;
+    runtimesDec << "EStree DecrementalDynamicSSSP Dijkstra ScaledEStree" << endl;
 
     auto graph = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
     auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
@@ -60,12 +59,7 @@ int main(int argc, char *argv[]) {
     stop = high_resolution_clock::now();
     auto duration3 = duration_cast<microseconds>(stop - start);
     
-    start = high_resolution_clock::now();
-    FullyDynamicScaledEStree fullES(source, graph);
-    stop = high_resolution_clock::now();
-    auto duration4 = duration_cast<microseconds>(stop - start);
-    
-    runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<<" "<<duration4.count()<< endl;
+    runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<< endl;
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
@@ -95,12 +89,7 @@ int main(int argc, char *argv[]) {
         scaledES.deleteEdge(s, d);
         stop = high_resolution_clock::now();
         duration3 = duration_cast<microseconds>(stop - start);
-        
-        start = high_resolution_clock::now();
-        fullES.deleteEdge(s, d);
-        stop = high_resolution_clock::now();
-        duration4 = duration_cast<microseconds>(stop - start);
 
-        runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<<" "<<duration4.count()<< endl;
+        runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<< endl;
     }
 }

@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     da.initialize();
     
     FullyDynamicAlgo fd(graph, k);
-//
+
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
