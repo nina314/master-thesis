@@ -2,6 +2,7 @@
 #include "dynamicSSSP/DecrementalDynamicSSSP.hpp"
 #include "dynamicSSSP/IncrementalDynamicSSSP.hpp"
 #include "dynamicSSSP/ScaledEStree.hpp"
+#include "dynamicSSSP/FullyDynamicScaledEStree.hpp"
 #include "utils/common.hpp"
 #include <fstream>
 #include <iostream>
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
     int m = 10, k = 3;
 
     ofstream runtimesInc("results/short/IncrementalSSSP/" + name + "-incrementalDynamicSSSPRuntimes.txt");
-    runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource ScaledEStree" << endl;
+    runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource ScaledEStree FullyDynamicScaledEStree" << endl;
 
     auto adj = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
     auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
@@ -53,8 +54,13 @@ int main(int argc, char *argv[]) {
     ScaledEStree scaledES(source, adj);
     stop = high_resolution_clock::now();
     auto duration4 = duration_cast<microseconds>(stop - start);
+        
+    start = high_resolution_clock::now();
+    FullyDynamicScaledEStree fullES(source, adj);
+    stop = high_resolution_clock::now();
+    auto duration5 = duration_cast<microseconds>(stop - start);
     
-    runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<<" "<< duration4.count()<<endl;
+    runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<<" "<< duration4.count()<<" "<< duration5.count()<<endl;
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
@@ -82,12 +88,17 @@ int main(int argc, char *argv[]) {
         dSource.addEdge(s, d, 1);
         stop = high_resolution_clock::now();
         duration3 = duration_cast<microseconds>(stop - start);
-        start = high_resolution_clock::now();
         
+        start = high_resolution_clock::now();
         scaledES.addEdge(s, d, 1);
         stop = high_resolution_clock::now();
         duration4 = duration_cast<microseconds>(stop - start);
         
-        runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<<" "<< duration4.count()<<endl;
+        start = high_resolution_clock::now();
+        fullES.deleteEdge(s, d);
+        stop = high_resolution_clock::now();
+        duration5 = duration_cast<microseconds>(stop - start);
+        
+        runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() <<" "<<duration3.count()<<" "<< duration4.count()<<" "<< duration5.count()<<endl;
     }
 }

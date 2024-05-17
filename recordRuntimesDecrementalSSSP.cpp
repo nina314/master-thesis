@@ -65,9 +65,7 @@ int main(int argc, char *argv[]) {
     stop = high_resolution_clock::now();
     auto duration4 = duration_cast<microseconds>(stop - start);
     
-    
-        
-    runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<< endl;
+    runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<<" "<<duration4.count()<< endl;
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
