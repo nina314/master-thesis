@@ -1,8 +1,8 @@
-#include "dynamicSSSP/EStree.hpp"
-#include "dynamicSSSP/DecrementalDynamicSSSP.hpp"
-#include "dynamicSSSP/IncrementalDynamicSSSP.hpp"
-#include "dynamicSSSP/ScaledEStree.hpp"
-#include "utils/common.hpp"
+#include "../dynamicSSSP/EStree.hpp"
+#include "../dynamicSSSP/DecrementalDynamicSSSP.hpp"
+#include "../dynamicSSSP/IncrementalDynamicSSSP.hpp"
+#include "../dynamicSSSP/ScaledEStree.hpp"
+#include "../utils/common.hpp"
 #include <fstream>
 #include <iostream>
 #include <iomanip>
