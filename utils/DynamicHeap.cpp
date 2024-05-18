@@ -2,9 +2,11 @@
 
 void DynamicHeap::push(pair<int,int> element)
 {
-    if(mapa.count(element.second) && mapa[element.second] == element.first) return;
-    
     mapa[element.second] = element.first;
+    if(mapa.find(element.second)!=mapa.end()) 
+    {
+        return;
+    }
     pq.push(element);
 }
 
