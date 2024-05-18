@@ -21,8 +21,8 @@ int main(int argc, char *argv[]) {
     double eps = stod(argv[3]);
     string name = argv[4];
 
-    ofstream runtimes("results/short/DecrementalKcenter/" + name + "-decrementalKcenterRuntimes.txt");
-    ofstream costs("results/short/DecrementalKcenter/" + name + "-decrementalKcenterCosts.txt");
+    ofstream runtimes("results/short/DecrementalKcenter/runtimes/" + name + "-decrementalKcenterRuntimes.txt");
+    ofstream costs("results/short/DecrementalKcenter/costs/" + name + "-decrementalKcenterCosts.txt");
 
     runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
     costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
