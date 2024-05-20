@@ -22,6 +22,11 @@ vector<int> FastMIS::generateRandomPermutation(int n) {
     return permutation;
 }
 
+int FastMIS::getLevel(int z)
+{
+    return floor(log2(pi[z]+1)); 
+}
+
 vector<set<pair<int, int>, CustomCompare>> FastMIS::convertToSet(const vector<unordered_set<pair<int, int>, PHash, PCompare>>& unorderedSets) {
 
     vector<set<pair<int, int>, CustomCompare>> sets(pi.size(), set<pair<int, int>, CustomCompare>(CustomCompare(pi)));
@@ -35,10 +40,11 @@ vector<set<pair<int, int>, CustomCompare>> FastMIS::convertToSet(const vector<un
     return sets;
 }
 
-FastMIS::FastMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, unordered_set<int> nodes) {
+FastMIS::FastMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, unordered_set<int> nodes) 
+{
     pi = generateRandomPermutation(graph.size());
     G = convertToSet(graph);
-    int levels = ceil(log2(graph.size()))+1;
+    int levels = ceil(log2(graph.size()+1))+1;
     V.resize(levels);
     mis = set<int, CustomCompare>(pi); 
     VV = set<int, CustomCompare>(pi); 
@@ -49,46 +55,36 @@ FastMIS::FastMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, 
     mis = set<int, CustomCompare>(pi); 
     int i=0, f=0;
     
+    set<int, CustomCompare> notDominated(pi);
+        
+    for(auto nn: nodes) 
+    {
+        notDominated.insert(nn);
+    }
+    
     for (auto v: VV) {
         if (!nodes.empty() && !nodes.count(v)) continue;
-        bool dominated = false;
-
-        for (auto& u : G[v]) { 
-            if (nodes.empty() || nodes.count(u.first)) {
-                if (mis.count(u.first)) {
-                    dominated = true;
-                    break;
-                }
-            }
-        }
-
-        if (!dominated) 
+        
+        if(notDominated.count(v))
         {
             mis.insert(v);
+            
+            notDominated.erase(v);
+            for(auto u: G[v])
+            {
+                if(notDominated.count(u.first))
+                notDominated.erase(u.first);
+            }
         }
-        
         
         i++;
         
         if(i==pow(2, f)  || i == VV.size())
         {
-            V[f] = VV;
-            
-            for(auto m: mis)
-            {
-                for(auto [nei, wei]: G[m]) 
-                {
-                    if (nodes.empty() || nodes.count(nei))
-                    {   
-                        V[f].erase(nei);
-                    }
-                }
-                V[f].erase(m);
-            }
+            V[f] = notDominated;
             f++;
         }
     }
-    
 }
 
 set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
@@ -114,6 +110,8 @@ set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
             mis.erase(v);
         }
     }
+    
+
     return mis;
 }
 
@@ -137,19 +135,15 @@ unordered_set<int> FastMIS::findInfluencedSet(int u, int v, int b) {
         if (mis.count(z)) 
         {
             S.insert(z);
-            int k;
-            
-            if(pi[z]!=0)
-                k = floor(log2(pi[z]));                
-                
-//            if (V[k-1].count(z)) cout << "Something is off. \n"; 
+            int k = getLevel(z);            
+            if (!V[k-1].count(z)) cerr << "Something is off. \n"; 
                 
             for (auto& w : G[z]) {
                 if (V[k].count(w.first) && pi[w.first] > pi[z]) {
                     if(!seen.count(w.first))
                     {
                         T.push({-pi[w.first], w.first});
-                    seen.insert(w.first);
+                        seen.insert(w.first);
                     }
                 }
             }
@@ -184,43 +178,46 @@ unordered_set<int> FastMIS::findInfluencedSet(int u, int v, int b) {
 void FastMIS::update(int u, int v) {
     if (pi[v] < pi[u]) swap(u, v);
     
-    
-    int a=-1;
-    
-    if(pi[u]!=0)
-        a = floor(log2(pi[u]));
-    
-    int b = floor(log2(pi[v]));
-    
+    int a=getLevel(u);
+    int b=getLevel(v);
+
     auto S = findInfluencedSet(u, v, b);
     
-    if (S.empty()) {    
+    if (S.empty()) 
+    {    
         int index = -1;
 
         for (auto [wnei, wwei] : G[v]) {
-            if (mis.count(wwei)) {
-                index = wwei;
+            if (mis.count(wnei)) {
+                index = wnei;
                 break;
             }
         }
 
-        if (index != -1) {
-            int doo = floor(log2(index));
+        if (index != -1) 
+        {
+            int doo = getLevel(index);
             doo = min(doo, (int)V.size()-1);
-            for (int i = max(0, a); i < doo; i++) {
+            
+            for (int i = max(0, a); i < doo; i++) 
+            {
                 V[i].insert(v);
             }
         } 
-        else {
-            for (int i = max(0, a); i < V.size(); i++) { 
+        else 
+        {
+            for (int i = max(0, a); i < V.size(); i++) 
+            { 
                 V[i].insert(v);
             }
         }
         
     } 
     else {
-        for (int i = a + 1; i < V.size(); i++) 
+        for (int i = a; i < V.size(); i++) 
+        {
             V[i].erase(v);
+        }
 
         auto temp = S;
         temp.erase(v);
@@ -230,6 +227,7 @@ void FastMIS::update(int u, int v) {
         G[u].insert({v, 1});
         G[v].insert({u, 1});
         
+        mis.erase(v);
         GreedyMIS(temp);
 
         G[u].erase({v,1});
@@ -248,39 +246,46 @@ void FastMIS::fixSubgraphs(const unordered_set<int>& S, const set<int, CustomCom
     {
         ss.push_back(s);
     }
+    
     sort(ss.begin(), ss.end(), [&](int a, int b) { return pi[a] < pi[b]; });
 
-    for (int z : ss) {
-        
-        int k;
-        
-        if(pi[z]!=0)
-            k = floor(log2(pi[z]));
-        else continue;
+    for (int z : ss) 
+    {
+        int k = getLevel(z);
         
         if (!before.count(z) && mis.count(z)) // z joined mis
         {
-            for (auto [w, wei] : G[z]) {
+            for (auto [w, wei] : G[z]) 
+            {
                 if (!V[k].count(w)) continue;
                 for (int i = k + 1; i < V.size(); i++) V[i].erase(w);
             }
-        } else if (before.count(z) && !mis.count(z)) {
-            for (auto [w, wei] : G[z]) {
+        } 
+        else if (before.count(z) && !mis.count(z)) //z left mis
+        {
+            for (auto [w, wei] : G[z]) 
+            {
                 int index = -1;
 
                 for (auto [wnei, wwei] : G[w]) {
-                    if (mis.count(wwei)) {
-                        index = wwei;
+                    
+                    if (mis.count(wnei)) 
+                    {
+                        index = wnei;
                         break;
                     }
                 }
 
-                if (index != -1) {
-                    int doo = floor(log2(index));
-                    for (int i = k; i <= doo; i++) {
+                if (index != -1) 
+                {
+                    int doo = getLevel(index);
+                    
+                    for (int i = k; i <= doo; i++) 
+                    {
                         V[i].insert(w);
                     }
-                } else {
+                } 
+                else {
                     for (int i = k; i < V.size(); i++) { 
                         V[i].insert(w);
                     }

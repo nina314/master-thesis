@@ -35,6 +35,7 @@ public:
     void update(int u, int v);
     void printAll();
     set<int, CustomCompare> mis;
+    int getLevel(int z);
 
 private:
     vector<set<pair<int, int>, CustomCompare>> G;
