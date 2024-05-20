@@ -7,16 +7,15 @@
 
 using namespace std;
 
-class KboundedMIS {
+class GreedyMIS {
 private:
     vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
     int k;
-    DynamicHeap degrees;
-    unordered_set<int> vertices;
+    unordered_set<int> VV;
 
 public:
     unordered_set<int> mis;
-    KboundedMIS() = default;
-    KboundedMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int k);
+    GreedyMIS() = default;
+    GreedyMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int k);
     unordered_set<int> update(int u, int v);
 };

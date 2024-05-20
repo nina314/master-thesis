@@ -46,11 +46,6 @@ FastMIS::FastMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>>& graph, 
     
     for(int i=0; i<graph.size(); i++) VV.insert(i);
     
-    GreedyMIS(nodes);
-    
-}
-
-set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
     mis = set<int, CustomCompare>(pi); 
     int i=0, f=0;
     
@@ -93,6 +88,32 @@ set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
             f++;
         }
     }
+    
+}
+
+set<int, CustomCompare> FastMIS::GreedyMIS(unordered_set<int> nodes) {
+    auto new_mis = set<int, CustomCompare>(pi); 
+    
+    for (auto v: new_mis) {
+        bool dominated = false;
+
+        for (auto& u : G[v]) { 
+            if (new_mis.count(u.first)) {
+                dominated = true;
+                break;
+            }
+        }
+
+        if (!dominated) 
+        {
+            new_mis.insert(v);
+            mis.insert(v);
+        }
+        else
+        {
+            mis.erase(v);
+        }
+    }
     return mis;
 }
 
@@ -121,13 +142,15 @@ unordered_set<int> FastMIS::findInfluencedSet(int u, int v, int b) {
             if(pi[z]!=0)
                 k = floor(log2(pi[z]));                
                 
-            if (!V[k].count(z)) cout << "Something is off. \n"; 
+//            if (V[k-1].count(z)) cout << "Something is off. \n"; 
                 
             for (auto& w : G[z]) {
                 if (V[k].count(w.first) && pi[w.first] > pi[z]) {
                     if(!seen.count(w.first))
-                    {T.push({-pi[w.first], w.first});
-                    seen.insert(w.first);}
+                    {
+                        T.push({-pi[w.first], w.first});
+                    seen.insert(w.first);
+                    }
                 }
             }
                 

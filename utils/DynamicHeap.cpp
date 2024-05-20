@@ -2,11 +2,12 @@
 
 void DynamicHeap::push(pair<int,int> element)
 {
-    mapa[element.second] = element.first;
-    if(mapa.find(element.second)!=mapa.end()) 
+    if(mapa.find(element.second)!=mapa.end() || mapa[element.second] == element.first) 
     {
         return;
     }
+    
+    mapa[element.second] = element.first;
     pq.push(element);
 }
 
