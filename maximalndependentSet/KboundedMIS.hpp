@@ -11,7 +11,7 @@ class KboundedMIS {
 private:
     vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
     int k;
-    DynamicHeap degrees;
+    vector<int> degrees;
     unordered_set<int> vertices;
 
 public:

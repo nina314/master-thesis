@@ -15,17 +15,18 @@
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
-    string name = argv[1];
+    string part = argv[1];
+    string name = argv[2];
     int k = INF;
 
-    ofstream runtimesInc("results/short/IncrementalMIS/runtimes/" + name + "-incrementalMISRuntimes.txt");
+    ofstream runtimesInc("results/"+part+"/IncrementalMIS/runtimes/" + name + "-incrementalMISRuntimes.txt");
     runtimesInc << "FastMIS KBoundedMIS GreedyMIS" << endl;
 
-    ofstream costsInc("results/short/IncrementalMIS/costs/" + name + "-incrementalMISRuntimes.txt");
+    ofstream costsInc("results/"+part+"/IncrementalMIS/costs/" + name + "-incrementalMISRuntimes.txt");
     costsInc << "FastMIS KBoundedMIS GreedyMIS" << endl;
 
-    auto adj = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    auto adj = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
     unordered_set<int> VV; 
     for(int i=0; i<adj.size(); i++) VV.insert(i);
@@ -47,9 +48,10 @@ int main(int argc, char *argv[]) {
     auto duration2 = duration_cast<microseconds>(stop - start);
     
     runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() <<endl;
-
+    int cnt=0;
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
+        if (cnt++ > 400) break;
         
         start = high_resolution_clock::now();
         fastMIS.update(s, d);

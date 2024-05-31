@@ -16,17 +16,18 @@
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
-    string name = argv[1];
-    int source = stoi(argv[2]);
-    int D = stoi(argv[3]); 
-    int eps = stoi(argv[4]);
+    int source = stoi(argv[1]);
+    int D = stoi(argv[2]); 
+    int eps = stoi(argv[3]);
+    string part = argv[4];
+    string name = argv[5];
     int m = 10, k = 3;
 
-    ofstream runtimesInc("results/short/IncrementalSSSP/" + name + "-incrementalDynamicSSSPRuntimes.txt");
+    ofstream runtimesInc("results/"+part+"/IncrementalSSSP/" + name + "-incrementalDynamicSSSPRuntimes.txt");
     runtimesInc << "EStree IncrementalDynamicSSSP Dijkstra Dsource ScaledEStree" << endl;
 
-    auto adj = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    auto adj = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
     auto start = high_resolution_clock::now();
     EStree es(adj, source);
@@ -55,9 +56,12 @@ int main(int argc, char *argv[]) {
     auto duration4 = duration_cast<microseconds>(stop - start);
     
     runtimesInc << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<<" "<< duration4.count()<<endl;
-
+    int cnt = 0;
+    
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
+        
+        if (cnt++ > 400) break;
         
         adj[s].insert({d, w});
         adj[d].insert({s, w});

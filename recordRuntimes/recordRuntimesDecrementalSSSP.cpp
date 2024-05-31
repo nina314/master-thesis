@@ -15,18 +15,19 @@
 using namespace chrono;
 
 int main(int argc, char *argv[]) {
-    string name = argv[1];
-    int source = stoi(argv[2]);
-    int D = stoi(argv[3]);
-    int eps = stoi(argv[4]); 
+    int source = stoi(argv[1]);
+    int D = stoi(argv[2]);
+    int eps = stoi(argv[3]);
+    string part = argv[4];
+    string name = argv[5];
     int m = 10;
 
-    ofstream runtimesDec("results/short/DecrementalSSSP/" + name + "-decrementalDynamicSSSPRuntimes.txt");
+    ofstream runtimesDec("results/"+part+"/DecrementalSSSP/" + name + "-decrementalDynamicSSSPRuntimes.txt");
     
     runtimesDec << "EStree DecrementalDynamicSSSP Dijkstra ScaledEStree" << endl;
 
-    auto graph = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    auto graph = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
@@ -60,11 +61,12 @@ int main(int argc, char *argv[]) {
     auto duration3 = duration_cast<microseconds>(stop - start);
     
     runtimesDec << duration.count() << " " << duration1.count() << " " << duration2.count() << " "<<duration3.count()<< endl;
-
+    
+    int cnt=0;
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
-        
         if(graph.size()<=s || graph.size()<=d) continue;
+        if (cnt++ > 400) break;
         
         graph[s].erase({d, w});
         graph[d].erase({s, w});

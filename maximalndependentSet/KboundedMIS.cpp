@@ -1,12 +1,14 @@
 #include "KboundedMIS.hpp"
+#include <algorithm>
 
 using namespace std;
 
 KboundedMIS::KboundedMIS(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, int k) : graph(graph), k(k) {
     
+    degrees.resize(graph.size());
     for(int i=0; i<graph.size(); i++)
     {
-        degrees.push({graph[i].size(), i});
+        degrees[i]=graph[i].size();
         vertices.insert(i);
     }
 }
@@ -20,29 +22,32 @@ unordered_set<int> KboundedMIS::update(int u, int v) {
     graph[u].insert({u, v});
     graph[v].insert({v, u});
     
-    degrees.mapa[u]++;
-    degrees.mapa[v]++;
+    for(int i=0; i<graph.size(); i++)
+    {
+        degrees[i]=graph[i].size();
+        vertices.insert(i);
+    }
     
     mis.clear();
-    auto Q = degrees;
-    auto W = vertices;
     
-    while(!W.empty() && mis.size()<k+1)
-    {
-        int now = Q.top().second;
-        if(W.find(now)==W.end())
-        {
-            Q.pop();
-            continue;
-        }
-        
-        W.erase(now);
+    while (mis.size() < k + 1) {
+        auto minElementIt = min_element(degrees.begin(), degrees.end());
+        int now = distance(degrees.begin(), minElementIt);
+        if (degrees[now]>graph.size()) break;
         mis.insert(now);
-        
-        for(auto ed: graph[now])
-        {
-            W.erase(ed.first);
+
+        for (auto [neighbor, weight] : graph[now]) {
+            if (degrees[now]<graph.size()) {
+                degrees[neighbor] = INF / 2; 
+
+                for (auto [neighborOfNeighbor, w] : graph[neighbor]) {
+                    if (degrees[neighborOfNeighbor] < graph.size()) {
+                        degrees[neighborOfNeighbor]--;
+                    }
+                }
+            }
         }
+        degrees[now] = INF / 2; 
     }
     
     return mis;

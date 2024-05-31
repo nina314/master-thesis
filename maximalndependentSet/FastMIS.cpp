@@ -182,6 +182,7 @@ void FastMIS::update(int u, int v) {
     int b=getLevel(v);
 
     auto S = findInfluencedSet(u, v, b);
+    mis.erase(v);
     
     if (S.empty()) 
     {    
@@ -227,7 +228,7 @@ void FastMIS::update(int u, int v) {
         G[u].insert({v, 1});
         G[v].insert({u, 1});
         
-        mis.erase(v);
+        
         GreedyMIS(temp);
 
         G[u].erase({v,1});

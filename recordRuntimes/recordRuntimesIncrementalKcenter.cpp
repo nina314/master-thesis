@@ -20,28 +20,31 @@ int main(int argc, char *argv[]) {
     int k = stoi(argv[1]); // Number of centers to select
     int alpha = stoi(argv[2]); // Approximation factor
     double eps = stod(argv[3]);
-    string name = argv[4]; 
+    string part = argv[4];
+    string name = argv[5]; 
+    
+    ofstream runtimes("results/"+part+"/IncrementalKcenter/runtimes/" + name + "-incrementalKcenterRuntimes.txt");
+    ofstream costs("results/"+part+"/IncrementalKcenter/costs/" + name + "-incrementalKcenterCosts.txt");
 
-    ofstream runtimes("results/short/IncrementalKcenter/runtimes/" + name + "-incrementalKcenterRuntimes.txt");
-    ofstream costs("results/short/IncrementalKcenter/costs/" + name + "-incrementalKcenterCosts.txt");
-
-    runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic ModifiedIncremental" << endl;
-    costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic ModifiedIncremental" << endl;
+    runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
+    costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
 
     int maxWeight = 1;
 
-    auto graph = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    auto graph = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
     auto ia = IncrementalAlgo(graph, k, eps);
-    auto mia = ModifiedIncrementalAlgo(graph, k, eps);
     auto fd = FullyDynamicAlgo(graph, k);
+    int cnt = 0;
     
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
         if(graph.size()<=s || graph.size()<=d) continue;
         if(graph[s].count({d,w}) || graph[d].count({s,w})) continue;
+        
+        if (cnt++ > 400) break;
         
         graph[s].insert({d, w});
         graph[d].insert({s, w});
@@ -80,14 +83,7 @@ int main(int argc, char *argv[]) {
         duration = duration_cast<microseconds>(stop - start);
         auto runtime5 = duration.count();
         auto cost5 = cost(graph, ia.getCenters());
-        
-        start = high_resolution_clock::now();
-        mia.insertEdge(s, d, w);
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        auto runtime7 = duration.count();
-        auto cost7 = cost(graph, mia.getCenters());
-        
+    
         start = high_resolution_clock::now();
         fd.addEdge(s, d, w);
         stop = high_resolution_clock::now();
@@ -95,9 +91,9 @@ int main(int argc, char *argv[]) {
         auto runtime6 = duration.count();
         auto cost6 = cost(graph, fd.getCenters());
 
-        costs << cost1 << " " << cost2 << " " << cost3 << " " << cost4 << " " << cost5<< " "<< cost6 << " "<<cost7<<endl;
+        costs << cost1 << " " << cost2 << " " << cost3 << " " << cost4 << " " << cost5<< " "<< cost6 <<endl;
         
-        runtimes << runtime1 << " " << runtime2 << " " << runtime3 << " " << runtime4 << " " << runtime5<<" "<<runtime6<<" "<<runtime7 << endl;
+        runtimes << runtime1 << " " << runtime2 << " " << runtime3 << " " << runtime4 << " " << runtime5<<" "<<runtime6<< endl;
         
     }
     return 0;

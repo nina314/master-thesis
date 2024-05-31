@@ -1,0 +1,2 @@
+FastMIS KBoundedMIS GreedyMIS
+10 0 0

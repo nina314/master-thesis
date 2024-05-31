@@ -16,6 +16,7 @@ vector<int> baselineGreedy(vector<unordered_set<pair<int, int>, PHash, PCompare>
 
     int source = rand() % n;
     independentSet.push_back(source);
+    Dijkstra(graph, source, distances);
 
     while (independentSet.size() < k) {
         auto max_dist = max_element(distances.begin(), distances.end());

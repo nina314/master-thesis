@@ -1,9 +1,22 @@
 #!/bin/bash
 
-names=("mammalia-voles-plj-trapping" "reptilia-tortoise-network-bsv" "aves-weaver-social" "insecta-ant-colony5")
+names=(
+    "short mammalia-voles-plj-trapping"
+    "short reptilia-tortoise-network-bsv"
+    "short aves-weaver-social"
+    "short insecta-ant-colony5"
+    "long ia-facebook-wall-wosn-dir.txt"
+    "long fb-messages.txt"
+    "long ia-escorts-dynamic.txt"
+    "long ia-digg-reply.txt"
+)
 
-for name in "${names[@]}"
+g++ -std=c++20 -o exe recordRuntimes/recordRuntimesMIS.cpp maximalndependentSet/FastMIS.cpp maximalndependentSet/KboundedMIS.cpp maximalndependentSet/greedyMIS.cpp utils/common.cpp utils/DynamicHeap.cpp
+
+for full_name in "${names[@]}"
 do
-    echo "Executing Incremental MIS for $name"
-    g++ -std=c++20 -o exe recordRuntimes/recordRuntimesMIS.cpp maximalndependentSet/FastMIS.cpp maximalndependentSet/KboundedMIS.cpp maximalndependentSet/greedyMIS.cpp utils/common.cpp utils/DynamicHeap.cpp && ./exe "$name"
+    part=$(echo "$full_name" | cut -d' ' -f1)
+    name=$(echo "$full_name" | cut -d' ' -f2-)
+    echo "Executing Incremental MIS for $full_name"
+    ./exe "$part" "$name"
 done

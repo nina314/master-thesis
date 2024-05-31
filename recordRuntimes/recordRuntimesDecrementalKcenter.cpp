@@ -19,18 +19,19 @@ int main(int argc, char *argv[]) {
     int k = stoi(argv[1]); // Number of centers to select
     int alpha = stoi(argv[2]); // Approximation factor
     double eps = stod(argv[3]);
-    string name = argv[4];
+    string part = argv[4];
+    string name = argv[5];
 
-    ofstream runtimes("results/short/DecrementalKcenter/runtimes/" + name + "-decrementalKcenterRuntimes.txt");
-    ofstream costs("results/short/DecrementalKcenter/costs/" + name + "-decrementalKcenterCosts.txt");
+    ofstream runtimes("results/"+part+"/DecrementalKcenter/runtimes/" + name + "-decrementalKcenterRuntimes.txt");
+    ofstream costs("results/"+part+"/DecrementalKcenter/costs/" + name + "-decrementalKcenterCosts.txt");
 
     runtimes << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
     costs << "RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
 
     int maxWeight = 1;
 
-    auto graph = getGraph("testingData/cleanedFiles/short/" + name + "-Edges.txt");
-    auto edgesToAdd = getQueries("testingData/cleanedFiles/short/" + name + "-Queries.txt");
+    auto graph = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
+    auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
@@ -43,13 +44,15 @@ int main(int argc, char *argv[]) {
     
     auto da = DecrementalAlgo(graph, eps, k);
     da.initialize();
-    
     FullyDynamicAlgo fd(graph, k);
-
+    int cnt=0;
+    
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
         if(graph.size()<=s || graph.size()<=d) continue;
+        
+        if (cnt++ > 400) break;
         
         graph[s].erase({d, w});
         graph[d].erase({s, w});
