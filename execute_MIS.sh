@@ -9,6 +9,7 @@ names=(
     "long fb-messages.txt"
     "long ia-escorts-dynamic.txt"
     "long ia-digg-reply.txt"
+    "long insecta-ant-colony3.txt"
 )
 
 g++ -std=c++20 -o exe recordRuntimes/recordRuntimesMIS.cpp maximalndependentSet/FastMIS.cpp maximalndependentSet/KboundedMIS.cpp maximalndependentSet/greedyMIS.cpp utils/common.cpp utils/DynamicHeap.cpp
