@@ -30,13 +30,14 @@ unordered_set<int> KboundedMIS::update(int u, int v) {
     
     mis.clear();
     
-    while (mis.size() < k + 1) {
+    while (!vertices.empty()) {
         auto minElementIt = min_element(degrees.begin(), degrees.end());
         int now = distance(degrees.begin(), minElementIt);
         if (degrees[now]>graph.size()) break;
         mis.insert(now);
 
         for (auto [neighbor, weight] : graph[now]) {
+            degrees[neighbor] = INF / 2; 
             if (degrees[now]<graph.size()) {
                 degrees[neighbor] = INF / 2; 
 

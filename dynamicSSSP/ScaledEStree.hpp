@@ -16,6 +16,7 @@ private:
     int r = INF;
     void scan(int u, int v);
     void scan2(int u, int v);
+    unordered_set<int> visited;
 
 public:
     ScaledEStree();

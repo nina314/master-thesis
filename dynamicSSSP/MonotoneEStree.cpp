@@ -81,15 +81,15 @@ void MonotoneEStree::updateLevels()
             {
                 priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> temp;
     
-                while(N[nei.first].top().second!=u)
+                while(N[nei.first].pq.size()>0 && N[nei.first].top().second!=u)
                 {
                     temp.push(N[nei.first].top());
                     N[nei.first].pop();
                 }
-
                 N[nei.first].pop();
                 N[nei.first].push({l[u]+nei.second, u});
 
+                
                 while(!temp.empty())
                 {
                     N[nei.first].push(temp.top());

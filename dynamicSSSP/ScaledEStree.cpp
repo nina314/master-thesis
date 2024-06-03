@@ -92,12 +92,15 @@ void ScaledEStree::increase(int u, int v, int w)
     graph[u].insert({v, w});
     graph[v].insert({u, w});
     
+    visited.clear();
     scan(u, v);
 }
 
 void ScaledEStree::scan(int u, int v)
 {
     int w=INF/3;
+    if(visited.find(u)!=visited.end()) return;
+    visited.insert(u);
     
     if(graph[u].find({v, 1})!=graph[u].end())
         w = (graph[u].find({v, 1}))->second;
