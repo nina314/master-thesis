@@ -36,7 +36,8 @@ vector<int> distanceRIndependent(vector<unordered_set<pair<int, int>, PHash, PCo
     int lo = 0, hi = maxWeight*graph.size();
     vector<int> independentSet, res;
         
-    while (lo <= hi) {
+    
+    while (lo < hi) {
         int mid = (lo + hi) / 2;
         independentSet = maximalDistanceRIndependentSet(graph, mid);
         

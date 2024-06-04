@@ -1,0 +1,11 @@
+k RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic
+3 5 6 5 5 7 5
+6 5 6 4 5 4 4
+9 4 6 4 4 4 4
+12 4 5 3 4 4 4
+15 3 5 3 3 4 3
+18 3 5 3 3 4 3
+21 3 5 3 3 4 3
+24 3 5 3 3 2 3
+27 3 5 2 3 2 3
+30 3 5 3 3 2 3

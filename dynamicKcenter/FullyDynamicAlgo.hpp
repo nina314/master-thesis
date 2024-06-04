@@ -1,65 +1,82 @@
 #include "../utils/common.hpp"
+#include "../dynamicSSSP/FastDijkstra.hpp"
 #include <unordered_set>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
 class FullyDynamicAlgo
 {
-    public:
+public:
     int s;
     unordered_set<int> centers;
-    int k;
-    vector<int> dists;
+    int k, first;
     vector<unordered_set<pair<int, int>, PHash, PCompare>> graph;
-    
+    FastDijkstra fd;
+
     FullyDynamicAlgo(vector<unordered_set<pair<int, int>, PHash, PCompare>> g, int k2)
-    {   
-        k= k2;
-        s= g.size();
-        g.push_back({});
-        graph = g;
+        : k(k2), graph(g)
+    {
+        s = g.size();
+        graph.resize(s + 1);
+
+        first = rand() % s;
+        graph[s].insert({first, 0});
+        graph[first].insert({s, 0});
+
+        fd = FastDijkstra(graph, s);
+
         centers = simulateGonzales();
     }
-    
+
     unordered_set<int> simulateGonzales()
     {
-        dists= vector<int>(graph.size(), INF);
+        auto temp = fd;
         
         unordered_set<int> C;
-        
-        for(int i=0; i<k; i++)
+        C.insert(first);
+
+        while (C.size() < k)
         {
-            Dijkstra(graph, s, dists);
-            auto maxi = max_element(dists.begin(), dists.end());
-            int c_next = distance(dists.begin(), maxi); 
-            
-            graph[s].insert({c_next, 0});
-            graph[c_next].insert({s, 0});
+            int r = C.size();
+            auto maxi = max_element(temp.dists.begin(), temp.dists.end());
+            int c_next = distance(temp.dists.begin(), maxi); 
+
             
             C.insert(c_next);
+            if(C.size()==r) break;
+            
+            temp.addEdge(s, c_next, 0);
         }
+
         
-        for(auto c: C)
-        {          
-            graph[s].erase({c, 0});
-            graph[c].erase({s, 0});
-        }
         return C;
     }
-    
+
     void addEdge(int u, int v, int w)
     {
-        graph[u].insert({v, w});
-        graph[v].insert({u, w});
+        fd.addEdge(u, v, w);
         centers = simulateGonzales(); 
     }
-    
+
     void deleteEdge(int u, int v)
     {
         graph[u].erase({v, 1});
         graph[v].erase({u, 1});
-        centers = simulateGonzales(); 
+
+        graph[s].erase({first, 0});
+        graph[first].erase({s, 0});
+
+        first = rand() % (graph.size() - 1);
+
+        graph[s].insert({first, 0});
+        graph[first].insert({s, 0});
+
+        fd = FastDijkstra(graph, s);
+
+        centers = simulateGonzales();
     }
-    
+
     vector<int> getCenters()
     {
         vector<int> res;
@@ -69,6 +86,4 @@ class FullyDynamicAlgo
         
         return res;
     }
-
 };
-

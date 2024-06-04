@@ -51,6 +51,7 @@ vector<unordered_set<pair<int, int>, PHash, PCompare>> buildGraphWithSources(vec
 
 int cost(vector<unordered_set<pair<int, int>, PHash, PCompare>> graph, vector<int> centers)
 {
+    if(centers.empty()) return -1;
     int source = centers[0];
     graph = buildGraphWithSources(graph, centers);
     vector<int> distance(graph.size(), INF);

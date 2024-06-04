@@ -1,0 +1,4 @@
+k RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic
+3 4290 493 835 13176 8 2089
+6 4117 564 848 13413 5 2100
+9 4051 583 871 13553 6 2139
