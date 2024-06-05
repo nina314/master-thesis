@@ -33,6 +33,14 @@ int main(int argc, char *argv[]) {
     auto graph = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
     auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
+    for(auto edge: graph)
+    {
+        for(auto [s, w]: edge)
+        {
+            maxWeight = max(maxWeight, w);
+        }
+    }
+    
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
         
@@ -40,6 +48,7 @@ int main(int argc, char *argv[]) {
         
         graph[s].insert({d, w});
         graph[d].insert({s, w});
+        maxWeight = max(maxWeight, w);
     }
     
     auto da = DecrementalAlgo(graph, eps, k);
@@ -56,6 +65,18 @@ int main(int argc, char *argv[]) {
         
         graph[s].erase({d, w});
         graph[d].erase({s, w});
+        
+        auto dists = vector<int>(graph.size(), INF);
+        Dijkstra(graph, 2, dists);
+        bool t = false;
+        for(auto d: dists)
+            if(d>INF/6)
+            {
+                t=true;
+                break;
+            }
+
+        if(t) break;
 
         auto start = high_resolution_clock::now();
         auto centers1 = distanceRIndependent(graph, k, maxWeight);

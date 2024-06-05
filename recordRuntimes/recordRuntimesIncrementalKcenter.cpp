@@ -34,6 +34,14 @@ int main(int argc, char *argv[]) {
     auto graph = getGraph("testingData/cleanedFiles/"+part+"/" + name + "-Edges.txt");
     auto edgesToAdd = getQueries("testingData/cleanedFiles/"+part+"/" + name + "-Queries.txt");
 
+    for(auto edge: graph)
+    {
+        for(auto [s, w]: edge)
+        {
+            maxWeight = max(maxWeight, w);
+        }
+    }
+    
     auto ia = IncrementalAlgo(graph, k, eps);
     auto fd = FullyDynamicAlgo(graph, k);
     int cnt = 0;
@@ -44,10 +52,11 @@ int main(int argc, char *argv[]) {
         if(graph.size()<=s || graph.size()<=d) continue;
         if(graph[s].count({d,w}) || graph[d].count({s,w})) continue;
         
-        if (cnt++ > 400) break;
+        if (cnt++ > 1400) break;
         
         graph[s].insert({d, w});
         graph[d].insert({s, w});
+        maxWeight = max(maxWeight, w);
         
         auto start = high_resolution_clock::now();
         auto centers1 = distanceRIndependent(graph, k, maxWeight);

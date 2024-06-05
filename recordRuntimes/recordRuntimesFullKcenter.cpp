@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 
     auto fd = FullyDynamicAlgo(graph, k);
     int cnt = 0;
-
+    
     for (int i = 0; i < edgesToAdd.size(); i++) {
         auto [s, p] = edgesToAdd[i];
         auto [d, w] = p;
@@ -64,11 +64,22 @@ int main(int argc, char *argv[]) {
         if (graph[s].count({d, w}) || graph[d].count({s, w})) continue;
 
         int runtime6, cost6;
+        
+        auto dists = vector<int>(graph.size(), INF);
+            Dijkstra(graph, 2, dists);
+            bool t = false;
+            for(auto d: dists)
+                if(d>INF/2)
+                {
+                    t=true;
+                    break;
+                }
+        
 
-        if (randomFloat() <= 0.3) {
+        if (t || randomFloat() >= 0.3) {
             graph[s].insert({d, w});
             graph[d].insert({s, w});
-
+            
             auto start = high_resolution_clock::now();
             fd.addEdge(s, d, w);
             auto stop = high_resolution_clock::now();
@@ -84,18 +95,6 @@ int main(int argc, char *argv[]) {
             
             if(graph[s].find({d, w})==graph[s].end()) continue;
             if(graph[d].find({s, w})==graph[d].end()) continue;
-            
-            auto dists = vector<int>(graph.size(), INF);
-            Dijkstra(graph, 2, dists);
-            bool t = false;
-            for(auto d: dists)
-                if(d>INF/2)
-                {
-                    t=true;
-                    break;
-                }
-            
-            if(t) continue;
             
             auto start = high_resolution_clock::now();
             fd.deleteEdge(s, d);
@@ -117,6 +116,14 @@ int main(int argc, char *argv[]) {
         auto runtime1 = duration.count();
         auto cost1 = cost(graph, centers1);
 
+        for(auto ed: graph)
+        {
+            for(auto [sss, ww]: ed)
+            {
+                maxWeight = max(maxWeight, ww);
+            }
+        }
+        
         start = high_resolution_clock::now();
         auto centers2 = gonzalezAlpha(graph, k, alpha, maxWeight);
         stop = high_resolution_clock::now();

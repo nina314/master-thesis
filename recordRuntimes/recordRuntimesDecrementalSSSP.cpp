@@ -72,21 +72,28 @@ int main(int argc, char *argv[]) {
         graph[d].erase({s, w});
         
         start = high_resolution_clock::now();
+        dists = vector<int>(graph.size(), INF);
+        Dijkstra(graph, source, dists);
+        stop = high_resolution_clock::now();
+        duration2 = duration_cast<microseconds>(stop - start);
+        
+        bool t = false;
+        for(auto d: dists) 
+        {
+            if(d>INF/6) t = true;
+        }
+        if(t) break;
+        
+        start = high_resolution_clock::now();
         es.deleteEdge(s, d, INF/2);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
-
+        
         start = high_resolution_clock::now();
         dynamic.deleteEdge(source, d);
         stop = high_resolution_clock::now();
         duration1 = duration_cast<microseconds>(stop - start);
         
-        start = high_resolution_clock::now();
-        dists = vector<int>(graph.size(), INF);
-        Dijkstra(graph, source, dists);
-        stop = high_resolution_clock::now();
-        duration2 = duration_cast<microseconds>(stop - start);
-
         start = high_resolution_clock::now();
         scaledES.deleteEdge(s, d);
         stop = high_resolution_clock::now();

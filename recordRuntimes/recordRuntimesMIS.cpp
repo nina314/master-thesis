@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     int cnt=0;
     for (auto [s, p] : edgesToAdd) {
         auto [d, w] = p;
-        if (cnt++ > 400) break;
+        if (cnt++ > 300) break;
         
         start = high_resolution_clock::now();
         fastMIS.update(s, d);
