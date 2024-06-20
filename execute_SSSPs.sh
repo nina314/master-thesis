@@ -22,11 +22,15 @@ run_programs() {
     local part=$(echo "$full_name" | cut -d' ' -f1)
     local name=$(echo "$full_name" | cut -d' ' -f2-)
 
-    echo "Executing Incremental SSSP for $full_name"
-    ./exe_incremental 40 35 1 "$part" "$name"
+#    echo "Executing Incremental SSSP for $full_name"
+#    ./exe_incremental 40 35 1 "$part" "$name"
 
 #    echo "Executing Decremental SSSP for $full_name"
 #    ./exe_decremental 70 35 1 "$part" "$name"
+    
+    echo "Executing Full SSSP for $full_name"
+    ./exe_full 40 35 1 "$part" "$name"
+
 }
 
 for full_name in "${names[@]}"; do

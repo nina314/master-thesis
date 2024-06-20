@@ -2,6 +2,7 @@
 #include "../staticKcenter/distanceRIndependent.hpp"
 #include "../staticKcenter/randomCenters.hpp"
 #include "../staticKcenter/baselineGreedy.hpp"
+#include "../staticKcenter/sparsification.hpp"
 #include "../staticKcenter/bottleneck.hpp"
 #include "../dynamicKcenter/FullyDynamicAlgo.hpp"
 #include "../dynamicKcenter/DecrementalAlgo.hpp"

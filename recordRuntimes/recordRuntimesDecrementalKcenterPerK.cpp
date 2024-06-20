@@ -2,6 +2,7 @@
 #include "../staticKcenter/distanceRIndependent.hpp"
 #include "../staticKcenter/randomCenters.hpp"
 #include "../staticKcenter/baselineGreedy.hpp"
+#include "../staticKcenter/sparsification.hpp"
 #include "../staticKcenter/bottleneck.hpp"
 #include "../dynamicKcenter/FullyDynamicAlgo.hpp"
 #include "../dynamicKcenter/DecrementalAlgo.hpp"
@@ -30,8 +31,8 @@ int main(int argc, char *argv[]) {
     ofstream avgRuntimes("results/"+part+"/DecrementalKcenter/"+ name + "-avgRuntimes.txt");
     ofstream avgCosts("results/"+part+"/DecrementalKcenter/"+ name + "-avgCosts.txt");
 
-    avgRuntimes << "k RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
-    avgCosts << "k RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
+    avgRuntimes << "k Sparsification RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
+    avgCosts << "k Sparsification RIndependent Gonzalez BaselineGreedy Bottleneck Dynamic FullyDynamic" << endl;
 
     for (k = 3; k <= 30; k += 3) {
         cout<<k<<endl;
@@ -64,8 +65,8 @@ int main(int argc, char *argv[]) {
         FullyDynamicAlgo fd(graph, k);
         int cnt = 0;
 
-        long long runtimeSum1 = 0, runtimeSum2 = 0, runtimeSum3 = 0, runtimeSum4 = 0, runtimeSum5 = 0, runtimeSum6 = 0;
-        int costSum1 = 0, costSum2 = 0, costSum3 = 0, costSum4 = 0, costSum5 = 0, costSum6 = 0;
+        long long runtimeSum1 = 0, runtimeSum2 = 0, runtimeSum3 = 0, runtimeSum4 = 0, runtimeSum5 = 0, runtimeSum6 = 0, runtimeSum7 = 0;
+        int costSum1 = 0, costSum2 = 0, costSum3 = 0, costSum4 = 0, costSum5 = 0, costSum6 = 0, costSum7 = 0;
         int iterations = 0;
 
         for (auto [s, p] : edgesToAdd) {
@@ -132,11 +133,19 @@ int main(int argc, char *argv[]) {
             duration = duration_cast<microseconds>(stop - start);
             runtimeSum6 += duration.count();
             costSum6 += cost(graph, centers6);
+            
+            start = high_resolution_clock::now();
+            auto centers7 = sparsification(graph, k, 0.3, 0.3);
+            stop = high_resolution_clock::now();
+            duration = duration_cast<microseconds>(stop - start);
+            runtimeSum7 += duration.count();
+            costSum7 += cost(graph, centers7);
 
             iterations++;
         }
 
         avgRuntimes << k << " "
+                    << (iterations != 0 ? runtimeSum7 / iterations : 0) << " "
                     << (iterations != 0 ? runtimeSum1 / iterations : 0) << " "
                     << (iterations != 0 ? runtimeSum2 / iterations : 0) << " "
                     << (iterations != 0 ? runtimeSum3 / iterations : 0) << " "
@@ -145,6 +154,7 @@ int main(int argc, char *argv[]) {
                     << (iterations != 0 ? runtimeSum6 / iterations : 0) << endl;
 
         avgCosts << k << " "
+                 << (iterations != 0 ? costSum7 / iterations : 0) << " "
                  << (iterations != 0 ? costSum1 / iterations : 0) << " "
                  << (iterations != 0 ? costSum2 / iterations : 0) << " "
                  << (iterations != 0 ? costSum3 / iterations : 0) << " "
@@ -155,5 +165,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
-//[:]Graph imported:0/100%
